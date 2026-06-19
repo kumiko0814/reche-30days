@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Re:che 30DAYS プログラム</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ---- onboarding screen ---- */
+    #onboarding{
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      padding:24px;
+    }
+    .ob-card{
+      width:min(440px,100%); background:var(--cream-2); border-radius:var(--radius);
+      box-shadow:var(--shadow); padding:36px 28px; text-align:center; position:relative; overflow:hidden;
+    }
+    .ob-card::before{
+      content:""; position:absolute; top:-60px; right:-60px; width:200px; height:200px;
+      background:radial-gradient(circle, var(--rose) 0%, transparent 70%); opacity:.5;
+    }
+    .ob-logo{
+      width:52px; height:52px; border-radius:16px; margin:0 auto 16px;
+      background:linear-gradient(135deg,var(--terra),var(--terra-soft));
+      display:grid; place-items:center; color:#fff; font-size:24px; font-weight:700;
+      box-shadow:var(--shadow-sm);
+    }
+    .ob-title{ font-size:20px; font-weight:700; margin:0 0 4px; }
+    .ob-sub{ font-size:13px; color:var(--ink-2); margin:0 0 28px; }
+    .ob-card .field{ text-align:left; }
+    .ob-card .field label{ font-size:13px; font-weight:700; display:block; margin-bottom:6px; }
+    .ob-card .field .input{ width:100%; }
+    .mode-select{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+    .mode-opt{
+      display:flex; align-items:flex-start; gap:10px; padding:12px 14px;
+      border:2px solid var(--line); border-radius:14px; cursor:pointer;
+      background:#fff; text-align:left; transition:border-color .15s;
+    }
+    .mode-opt:has(input:checked){ border-color:var(--terra); background:#FFF7F4; }
+    .mode-opt input[type=radio]{ margin-top:3px; accent-color:var(--terra); }
+    .mode-opt .mo-title{ font-size:14px; font-weight:700; }
+    .mode-opt .mo-sub{ font-size:12px; color:var(--ink-2); margin-top:2px; }
+    .ob-start{ width:100%; margin-top:24px; padding:14px; font-size:16px; }
+    .ob-welcome{ font-size:14px; color:var(--ink); background:linear-gradient(160deg,#FFF7F0,#fff);
+      border:1px solid var(--rose); border-radius:var(--radius-sm); padding:14px; margin-bottom:22px; line-height:1.7;}
+
+    /* ---- today's mission banner ---- */
+    .mission-banner{
+      background:linear-gradient(135deg,var(--terra),var(--terra-d));
+      border-radius:var(--radius); padding:22px; color:#fff;
+      margin-bottom:14px; box-shadow:var(--shadow);
+      display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    }
+    .mission-banner .mb-icon{
+      width:52px; height:52px; border-radius:16px;
+      background:rgba(255,255,255,.2); display:grid; place-items:center; flex-shrink:0;
+    }
+    .mission-banner .mb-body{ flex:1; min-width:0; }
+    .mission-banner .mb-label{ font-size:11px; font-weight:700; opacity:.8; letter-spacing:.1em; }
+    .mission-banner .mb-title{ font-size:17px; font-weight:700; margin:3px 0 8px; line-height:1.4; }
+    .mission-banner .btn-pri{
+      background:rgba(255,255,255,.22); border:1.5px solid rgba(255,255,255,.6); color:#fff;
+    }
+    .mission-banner .btn-pri:hover{ background:rgba(255,255,255,.35); filter:none; }
+    .mission-done-note{
+      background:linear-gradient(160deg,#F3FAF6,#fff); border:1px solid #CDE9DD;
+      border-radius:var(--radius); padding:18px 22px; color:var(--forest);
+      font-weight:700; font-size:15px; text-align:center; margin-bottom:14px;
+    }
+
+    /* ---- modal extras ---- */
+    .modal-head{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
+    .quiz-score{ text-align:right; font-size:13px; font-weight:700; color:var(--forest); margin-top:8px; }
+    .check-row{ display:flex; align-items:center; gap:10px; background:#fff;
+      border:1.5px solid var(--line); border-radius:14px; padding:14px; margin-top:14px; cursor:pointer; }
+    .check-row input[type=checkbox]{ width:18px; height:18px; accent-color:var(--forest); flex-shrink:0; }
+    .check-row label{ font-size:14px; cursor:pointer; }
+    .modal .m-done-tag{
+      display:inline-block; background:linear-gradient(135deg,var(--forest),#3A9E89);
+      color:#fff; font-size:12px; font-weight:700; padding:4px 12px;
+      border-radius:999px; margin-bottom:12px;
+    }
+
+    /* ---- calc output row ---- */
+    .out-box .o .ol{ font-size:13px; color:var(--ink-2); }
+
+    /* ---- app shell hidden by default ---- */
+    #app{ display:none; }
+  </style>
+</head>
+<body>
+
+<!-- ===================== ONBOARDING ===================== -->
+<div id="onboarding">
+  <div class="ob-card">
+    <div class="ob-logo">R</div>
+    <p class="ob-title">Re:che 30DAYS プログラム</p>
+    <p class="ob-sub">ようこそ。まずは自己紹介をしてくれると嬉しいです。</p>
+    <div class="ob-welcome">
+      メルカリ物販の基礎から数字の見方、出品の型まで——<br>
+      30日間、一緒にコツコツ積み上げていきましょう。<br>
+      無理せず、自分のペースで大丈夫ですよ。
+    </div>
+    <div class="field">
+      <label for="ob-nick">ニックネームを教えてください</label>
+      <input type="text" id="ob-nick" class="input" placeholder="例）ゆうこ、まゆみ など" maxlength="20" autocomplete="off">
+    </div>
+    <div class="field" style="margin-top:20px;">
+      <label>進め方を選んでください</label>
+      <div class="mode-select">
+        <label class="mode-opt">
+          <input type="radio" name="ob-mode" value="date" checked>
+          <div>
+            <div class="mo-title">毎日1日ずつ（おすすめ）</div>
+            <div class="mo-sub">開始日から1日1ミッションが解放されます</div>
+          </div>
+        </label>
+        <label class="mode-opt">
+          <input type="radio" name="ob-mode" value="free">
+          <div>
+            <div class="mo-title">まとめて見る（お試し）</div>
+            <div class="mo-sub">全30日を自由に確認できます</div>
+          </div>
+        </label>
+      </div>
+    </div>
+    <button class="btn btn-pri ob-start" onclick="startGame()">はじめる</button>
+  </div>
+</div>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="app">
+
+  <!-- HEADER -->
+  <header class="app-head">
+    <div class="row">
+      <div class="brand">
+        <div class="logo">R</div>
+        <div>
+          Re:che
+          <small>30DAYS PROGRAM</small>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost btn-sm" onclick="downloadExport()">進捗を送る</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- HERO -->
+    <section class="hero" id="hero-section">
+      <!-- rendered by renderHero() -->
+    </section>
+
+    <!-- KUMIKO DAILY MESSAGE -->
+    <section id="kumiko-section"></section>
+
+    <!-- わたしのお庭（育成） -->
+    <div class="sec-title" style="margin-top:24px;">
+      <h2>わたしのお庭</h2>
+      <span class="pill">そだてよう</span>
+    </div>
+    <section id="garden-section"></section>
+
+    <!-- TODAY'S MISSION -->
+    <section id="today-section" style="margin-top:24px;"></section>
+
+    <!-- CURRICULUM LIST -->
+    <div class="sec-title">
+      <h2>カリキュラム一覧</h2>
+      <span class="pill">30DAYS</span>
+    </div>
+    <div class="days" id="days-grid"></div>
+
+    <!-- STAMP CALENDAR -->
+    <div class="sec-title" style="margin-top:30px;">
+      <h2>スタンプカレンダー</h2>
+    </div>
+    <div class="stamps" id="stamp-grid"></div>
+
+    <!-- 同期ランキング -->
+    <div class="sec-title" style="margin-top:30px;">
+      <h2>同期ランキング</h2>
+      <span class="pill">2月後半入会</span>
+    </div>
+    <div id="rank-section"></div>
+
+    <!-- BADGES -->
+    <div class="sec-title" style="margin-top:30px;">
+      <h2>バッジ</h2>
+      <span class="pill" id="badge-pill">0 / 11</span>
+    </div>
+    <div class="badge-grid" id="badge-grid"></div>
+
+    <!-- FOOTER -->
+    <p class="note">
+      進捗はこの端末に保存されます。<br>
+      機種変更前は「進捗を送る」から事務局へ共有してくださいね。
+    </p>
+
+  </div><!-- /wrap -->
+</div><!-- /app -->
+
+<!-- ===================== DAY MODAL ===================== -->
+<div class="modal-back" id="modal-back" onclick="closeModalBack(event)">
+  <div class="modal" id="modal-inner">
+    <!-- rendered by openDay() -->
+  </div>
+</div>
+
+<script src="curriculum.js"></script>
+<script src="kumiko-messages.js"></script>
+<script src="app-core.js"></script>
+<script src="garden.js"></script>
+<script>
+/* =======================================================
+   index.html  インラインJS
+   ======================================================= */
+
+// ---------- helpers ----------
+
+function fmt(n) {
+  if (n == null || isNaN(n)) return "—";
+  return Math.round(n).toLocaleString("ja-JP");
+}
+function fmtDec(n, d) {
+  if (n == null || isNaN(n)) return "—";
+  return Number(n).toFixed(d != null ? d : 1);
+}
+
+// くみこアバター（画像→無ければ「く」アイコンへ自動フォールバック）
+function kMonoFallback(img) {
+  const d = document.createElement("div");
+  d.className = "k-ava mono";
+  d.style.width = img.getAttribute("width") + "px";
+  d.style.height = img.getAttribute("height") + "px";
+  d.style.fontSize = Math.round(img.getAttribute("width") * 0.4) + "px";
+  d.textContent = "く";
+  img.replaceWith(d);
+}
+function kAvatar(size) {
+  const src = (window.KUMIKO && KUMIKO.avatar) || "";
+  return `<img class="k-ava" src="${src}" width="${size}" height="${size}" alt="くみこ" onerror="kMonoFallback(this)">`;
+}
+function kAudioHtml(day) {
+  const a = window.KUMIKO && KUMIKO.audio && KUMIKO.audio[day];
+  return a ? `<audio class="k-audio" controls preload="none" src="${a}"></audio>` : "";
+}
+
+// ---------- init ----------
+
+(function init() {
+  if (RECHE.hasAccount()) {
+    showApp();
+  }
+})();
+
+function startGame() {
+  const nick = document.getElementById("ob-nick").value.trim();
+  if (!nick) {
+    RECHE.toast("ニックネームを入力してください");
+    document.getElementById("ob-nick").focus();
+    return;
+  }
+  const mode = document.querySelector("input[name=ob-mode]:checked").value;
+  RECHE.startAccount(nick, mode);
+  showApp();
+}
+
+function showApp() {
+  document.getElementById("onboarding").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  renderAll();
+}
+
+function renderAll() {
+  const s = RECHE.getState();
+  if (s) RECHE.publish(s);        // 自分を同期ランキングに反映
+  renderHero(s);
+  renderKumiko(s);
+  renderGarden(s);
+  renderToday(s);
+  renderDays(s);
+  renderStamps(s);
+  renderRanking(s);
+  renderBadges(s);
+}
+
+// ---------- くみこから今日のメッセージ ----------
+function targetDay(s) {
+  // 今日のミッション → 無ければ最初の未提出（解放済み）→ 全部doneなら30
+  for (let d = 1; d <= RECHE.TOTAL; d++) {
+    if (RECHE.dayStatus(s, d) === "today") return d;
+  }
+  const u = RECHE.unlockedThrough(s);
+  for (let d = 1; d <= u; d++) {
+    if (!(s.progress[d] && s.progress[d].done)) return d;
+  }
+  return RECHE.doneCount(s) >= RECHE.TOTAL ? 30 : u;
+}
+function renderKumiko(s) {
+  const sec = document.getElementById("kumiko-section");
+  if (!s) { sec.innerHTML = ""; return; }
+  const allDone = RECHE.doneCount(s) >= RECHE.TOTAL;
+  const day = targetDay(s);
+  const msg = allDone ? KUMIKO.done : KUMIKO_MSG(day);
+  sec.innerHTML = `
+    <div class="kumiko-card">
+      ${kAvatar(54)}
+      <div class="k-body">
+        <div class="k-name">${RECHE.esc(KUMIKO.name)}<small>${RECHE.esc(KUMIKO.role)} ｜ DAY ${day}</small></div>
+        <div class="k-msg">${RECHE.esc(msg)}</div>
+        <div id="kvoice-card"></div>
+      </div>
+    </div>`;
+  mountVoice("kvoice-card", day);
+}
+
+// ---------- わたしのお庭（育成） ----------
+function renderGarden(s) {
+  const sec = document.getElementById("garden-section");
+  if (!s) { sec.innerHTML = ""; return; }
+  sec.innerHTML = GARDEN.render(s);
+}
+
+// ---------- ボイス再生（あれば自動表示） ----------
+function mountVoice(elId, day) {
+  const host = document.getElementById(elId);
+  if (!host || !window.KUMIKO_AUDIO) return;
+  const url = KUMIKO_AUDIO(day);
+  const hasOverride = window.KUMIKO.audio && window.KUMIKO.audio[day];
+  const isHttp = location.protocol === "http:" || location.protocol === "https:";
+
+  const show = () => {
+    host.innerHTML = `
+      <button class="voice-btn" type="button" onclick="toggleVoice(this)">
+        <svg width="13" height="13" viewBox="0 0 12 12" fill="currentColor"><path d="M3 2l7 4-7 4z"/></svg>
+        くみこのボイスを聞く
+      </button>
+      <audio preload="none" src="${url}" onended="voiceEnded(this)"></audio>`;
+  };
+
+  if (hasOverride) { show(); return; }
+  if (!isHttp) { return; } // ローカル(file://)では自動検出不可。公開版で表示されます
+  fetch(url, { method: "HEAD" }).then(r => { if (r.ok) show(); }).catch(() => {});
+}
+function setVoiceLabel(btn, txt) {
+  const t = btn.childNodes[btn.childNodes.length - 1];
+  if (t && t.nodeType === 3) t.textContent = " " + txt; else btn.append(" " + txt);
+}
+function toggleVoice(btn) {
+  const audio = btn.parentElement.querySelector("audio");
+  if (!audio) return;
+  if (audio.paused) {
+    document.querySelectorAll("audio").forEach(a => { if (a !== audio) a.pause(); });
+    audio.play().catch(() => RECHE.toast("この日のボイスはまだ準備中です"));
+    btn.classList.add("playing"); setVoiceLabel(btn, "再生中…（押すと停止）");
+  } else {
+    audio.pause();
+    btn.classList.remove("playing"); setVoiceLabel(btn, "くみこのボイスを聞く");
+  }
+}
+function voiceEnded(audio) {
+  const btn = audio.parentElement.querySelector(".voice-btn");
+  if (btn) { btn.classList.remove("playing"); setVoiceLabel(btn, "くみこのボイスを聞く"); }
+}
+
+// ---------- 同期ランキング ----------
+function renderRanking(s) {
+  const sec = document.getElementById("rank-section");
+  if (!s) { sec.innerHTML = ""; return; }
+  const list = RECHE.ranking();
+  if (list.length <= 1) {
+    sec.innerHTML = `<div class="rank-empty">仲間の進捗がそろうと、ここに同期ランキングが表示されます。<br>あなたのペースで、まずは今日の一歩を♡</div>`;
+    return;
+  }
+  const top = list.slice(0, 8);
+  const meIn = top.some(r => r.nick === s.nick);
+  let rows = top.map((r, i) => rankRow(r, i + 1, s.nick)).join("");
+  if (!meIn) {
+    const mr = RECHE.myRank(s.nick);
+    if (mr.rank) rows += `<div style="text-align:center;color:var(--ink-2);font-size:12px;">…</div>`
+                       + rankRow(mr.list[mr.rank - 1], mr.rank, s.nick);
+  }
+  sec.innerHTML = `<div class="rank-list">${rows}</div>`;
+}
+function rankRow(r, rank, myNick) {
+  const me = r.nick === myNick;
+  const cls = ["rank-row", me ? "me" : "", rank === 1 ? "top1" : rank === 2 ? "top2" : rank === 3 ? "top3" : ""].join(" ");
+  return `<div class="${cls}">
+    <div class="rk">${rank}</div>
+    <div class="rn">${RECHE.esc(r.nick)}${me ? '<small>あなた</small>' : ''}<small>提出 ${r.done}/30</small></div>
+    <div class="rp">${fmt(r.points)} pt</div>
+  </div>`;
+}
+
+// ---------- hero ----------
+
+function renderHero(s) {
+  if (!s) return;
+  const pts   = RECHE.totalPoints(s);
+  const done  = RECHE.doneCount(s);
+  const stk   = RECHE.streak(s);
+  const lv    = RECHE.level(pts);
+  const pct   = Math.round((done / RECHE.TOTAL) * 100);
+  const toNext = lv.toNext > 0 ? `次の称号まであと ${fmt(lv.toNext)} pt` : "最高ランク達成";
+  const si    = RECHE.streakInfo(s);
+  const flame = `<svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1.5s3.5 3 3.5 6.2a3.5 3.5 0 11-7 0c0-1.2.6-2.2.6-2.2s.2 1.3 1.2 1.6C6.6 5 6 3.2 8 1.5z" fill="currentColor"/></svg>`;
+  const streakHint = si.next
+    ? `連続提出 <b>${si.streak}日</b>。あと <b>${si.toNext}日</b> で連続ボーナス <b>+${fmt(si.nextBonus)}pt</b>`
+    : `連続提出 <b>${si.streak}日</b>。連続ボーナスをすべて達成しました`;
+
+  document.getElementById("hero-section").innerHTML = `
+    <p class="hello">こんにちは、<b>${RECHE.esc(s.nick)}</b>さん</p>
+    <div class="level-row">
+      <span class="level-badge">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1l1.9 3.8 4.2.6-3 3 .7 4.2L8 10.5l-3.8 2.1.7-4.2-3-3 4.2-.6z"
+            fill="currentColor"/>
+        </svg>
+        Lv.${lv.lv} ${RECHE.esc(lv.name)}
+      </span>
+      <span class="streak-chip">${flame} ${si.streak}日連続</span>
+    </div>
+    <div class="metric">
+      <div class="m"><div class="n">${done}<small style="font-size:14px;font-weight:600"> / 30</small></div><div class="l">提出数</div></div>
+      <div class="m"><div class="n">${stk}<small style="font-size:14px;font-weight:600"> 日</small></div><div class="l">連続提出</div></div>
+      <div class="m"><div class="n">${fmt(pts)}<small style="font-size:14px;font-weight:600"> pt</small></div><div class="l">累計ポイント</div></div>
+    </div>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="bar-meta">
+      <span>${pct}% 完了</span>
+      <span>${toNext}</span>
+    </div>
+    <div class="streak-hint">${streakHint}</div>
+  `;
+}
+
+// ---------- today's mission ----------
+
+function renderToday(s) {
+  const sec = document.getElementById("today-section");
+  if (!s) { sec.innerHTML = ""; return; }
+  const ul = RECHE.unlockedThrough(s);
+  let todayDay = null;
+  for (let d = 1; d <= RECHE.TOTAL; d++) {
+    if (RECHE.dayStatus(s, d) === "today") { todayDay = d; break; }
+  }
+
+  if (!todayDay) {
+    // 全部doneか、freeモードでtodayが特定できない場合
+    const allDone = RECHE.doneCount(s) >= RECHE.TOTAL;
+    if (allDone) {
+      sec.innerHTML = `<div class="mission-done-note">30日間の全ミッションが完了です。本当におつかれさまでした。</div>`;
+    } else {
+      sec.innerHTML = "";
+    }
+    return;
+  }
+
+  const def = RECHE.dayDef(todayDay);
+  const status = RECHE.dayStatus(s, todayDay);
+
+  if (status === "done") {
+    sec.innerHTML = `<div class="mission-done-note">今日のミッションは完了です。おつかれさまでした。</div>`;
+    return;
+  }
+
+  sec.innerHTML = `
+    <div class="mission-banner">
+      <div class="mb-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/>
+          <path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="mb-body">
+        <div class="mb-label">TODAY&apos;S MISSION &nbsp;DAY ${todayDay}</div>
+        <div class="mb-title">${RECHE.esc(def.title)}</div>
+        <button class="btn btn-pri btn-sm" onclick="openDay(${todayDay})">今日のミッションを開く</button>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- days grid ----------
+
+function renderDays(s) {
+  const grid = document.getElementById("days-grid");
+  if (!s) { grid.innerHTML = ""; return; }
+
+  grid.innerHTML = RECHE_CURRICULUM.map(def => {
+    const st = RECHE.dayStatus(s, def.day);
+    const isDone   = st === "done";
+    const isToday  = st === "today";
+    const isLocked = st === "locked";
+
+    let stateLabel = "";
+    if (isDone)   stateLabel = "済";
+    else if (isToday)  stateLabel = "今日のミッション";
+    else if (st === "open") stateLabel = "未提出";
+    else stateLabel = "解放前";
+
+    const checkSvg = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M2.5 7l3 3 6-6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+    const lockSvg = `<svg class="lockicon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <rect x="3" y="7" width="10" height="8" rx="2.5" stroke="#B0A098" stroke-width="1.4"/>
+      <path d="M5.5 7V5.5a2.5 2.5 0 015 0V7" stroke="#B0A098" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>`;
+
+    return `<div class="daycard ${st}" onclick="${isLocked ? '' : `openDay(${def.day})`}" tabindex="${isLocked ? -1 : 0}"
+        onkeydown="${isLocked ? '' : `if(event.key==='Enter')openDay(${def.day})`}">
+      <div class="stg">${RECHE.esc(def.stage)}</div>
+      <div class="dnum">DAY ${def.day}</div>
+      <div class="dttl">${RECHE.esc(def.title)}</div>
+      <div class="state">${stateLabel}</div>
+      <div class="check">${checkSvg}</div>
+      ${isLocked ? lockSvg : ""}
+    </div>`;
+  }).join("");
+}
+
+// ---------- stamps ----------
+
+function renderStamps(s) {
+  const grid = document.getElementById("stamp-grid");
+  if (!s) { grid.innerHTML = ""; return; }
+  grid.innerHTML = Array.from({length: 30}, (_, i) => {
+    const day = i + 1;
+    const done = s.progress[day] && s.progress[day].done;
+    return `<div class="stamp ${done ? "on" : ""}"><span>${day}</span></div>`;
+  }).join("");
+}
+
+// ---------- badges ----------
+
+function renderBadges(s) {
+  const grid   = document.getElementById("badge-grid");
+  const pill   = document.getElementById("badge-pill");
+  if (!s) { grid.innerHTML = ""; return; }
+  const earned = RECHE.earnedBadges(s);
+  pill.textContent = `${earned.length} / ${RECHE_BADGES.length}`;
+
+  const crownSvg = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path d="M3 17h18M5 17L3 8l4.5 4L12 4l4.5 8L21 8l-2 9"
+      stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+
+  grid.innerHTML = RECHE_BADGES.map(b => {
+    const on = earned.includes(b.id);
+    return `<div class="bdg ${on ? "" : "locked"}">
+      <div class="medal">${crownSvg}</div>
+      <div class="bname">${RECHE.esc(b.id)}</div>
+      <div class="bdesc">${RECHE.esc(b.desc)}</div>
+    </div>`;
+  }).join("");
+}
+
+// ---------- modal ----------
+
+let _currentDay = null;
+
+function openDay(day) {
+  const s   = RECHE.getState();
+  const def = RECHE.dayDef(day);
+  const st  = RECHE.dayStatus(s, day);
+  if (st === "locked") return;
+
+  _currentDay = day;
+  const isDone = st === "done";
+  const prev   = (s.progress[day] && s.progress[day]) || {};
+  const fb     = RECHE.getFeedbackObj(s.nick, day);
+
+  let inputHtml = "";
+
+  if (def.type === "submit") {
+    const val = isDone && prev.value ? RECHE.esc(prev.value) : "";
+    inputHtml = `
+      <div class="field">
+        <label>提出内容</label>
+        <textarea class="input" id="m-submit" placeholder="${RECHE.esc(def.placeholder || "")}">${val}</textarea>
+      </div>`;
+  } else if (def.type === "action") {
+    const checked = isDone ? "checked" : "";
+    inputHtml = `
+      <div class="check-row" onclick="toggleCheck()">
+        <input type="checkbox" id="m-check" ${checked}>
+        <label for="m-check">${RECHE.esc(def.checklabel)}</label>
+      </div>`;
+  } else if (def.type === "quiz") {
+    inputHtml = buildQuizHtml(def, prev, isDone);
+  } else if (def.type === "calc") {
+    inputHtml = buildCalcHtml(def, prev, isDone);
+  } else if (def.type === "report") {
+    inputHtml = buildReportHtml(def, prev, isDone);
+  }
+
+  // feedback
+  let fbHtml = "";
+  if (fb) {
+    fbHtml = `<div class="fb">
+      <div class="fb-h"><span class="mini">R</span>事務局より</div>
+      <p>${RECHE.esc(fb.text)}</p>
+    </div>`;
+  } else {
+    fbHtml = `<div class="fb empty">事務局からのコメントがまだありません</div>`;
+  }
+
+  // submit button
+  let submitLabel = isDone ? "修正して再提出" : "提出する";
+  let submitBtn = `<button class="btn btn-pri" onclick="submitDay()">${submitLabel}</button>`;
+  if (def.type === "quiz" && !isDone) {
+    submitBtn = `
+      <button class="btn btn-ghost" onclick="gradeQuiz()">答え合わせ</button>
+      <button class="btn btn-pri" id="quiz-submit-btn" onclick="submitDay()" disabled>提出する</button>`;
+  }
+
+  document.getElementById("modal-inner").innerHTML = `
+    <button class="close-x" onclick="closeModal()" aria-label="閉じる">&times;</button>
+    ${isDone ? '<span class="m-done-tag">提出済み</span>' : ""}
+    <div class="modal-head">
+      <span class="m-stage">${RECHE.esc(def.stage)}</span>
+    </div>
+    <div class="m-voice">${RECHE.esc(def.voice)}</div>
+    <h3>${RECHE.esc(def.title)}</h3>
+    <div class="k-bubble">
+      ${kAvatar(40)}
+      <div class="bub">${RECHE.esc(KUMIKO_MSG(def.day))}<div id="kvoice-modal"></div></div>
+    </div>
+    <div class="m-detail">${RECHE.esc(def.detail)}</div>
+    ${inputHtml}
+    ${fbHtml}
+    <div class="m-actions">${submitBtn}</div>
+  `;
+
+  document.getElementById("modal-back").classList.add("open");
+  document.body.style.overflow = "hidden";
+  mountVoice("kvoice-modal", def.day);
+}
+
+// ---- quiz ----
+
+function buildQuizHtml(def, prev, isDone) {
+  const prevQuiz = (prev && prev.quiz) || {};
+  return def.quiz.map((q, i) => {
+    const prevVal = (prev && prev["q" + i]) || "";
+    const solved  = isDone && prevVal !== "";
+    return `<div class="qitem" id="qitem-${i}">
+      <div class="qq">Q${i + 1}. ${RECHE.esc(q.q)}</div>
+      <div class="qhint">ヒント：${RECHE.esc(q.hint)}</div>
+      <div class="qin">
+        <input type="number" step="any" class="input" id="q-input-${i}" value="${RECHE.esc(prevVal)}" placeholder="数値">
+        <span>${RECHE.esc(q.unit)}</span>
+      </div>
+      <div class="qjudge" id="q-judge-${i}">
+        ${solved ? `<span class="${Math.abs(Number(prevVal) - q.answer) <= q.tolerance ? "ok" : "ng"}">${Math.abs(Number(prevVal) - q.answer) <= q.tolerance ? "正解" : "惜しい"} — 解説：${RECHE.esc(q.solution)}</span>` : ""}
+      </div>
+    </div>`;
+  }).join("") + `<div class="quiz-score" id="quiz-score"></div>`;
+}
+
+function gradeQuiz() {
+  const def = RECHE.dayDef(_currentDay);
+  let correct = 0;
+  def.quiz.forEach((q, i) => {
+    const val = Number(document.getElementById("q-input-" + i).value);
+    const ok  = Math.abs(val - q.answer) <= q.tolerance;
+    if (ok) correct++;
+    const judgeEl = document.getElementById("q-judge-" + i);
+    judgeEl.innerHTML = `<span class="${ok ? "ok" : "ng"}">${ok ? "正解" : "惜しい"} — 解説：${RECHE.esc(q.solution)}</span>`;
+  });
+  const scoreEl = document.getElementById("quiz-score");
+  if (scoreEl) scoreEl.textContent = `${correct} / ${def.quiz.length} 問正解`;
+  const submitBtn = document.getElementById("quiz-submit-btn");
+  if (submitBtn) submitBtn.disabled = false;
+}
+
+// ---- calc ----
+
+function buildCalcHtml(def, prev, isDone) {
+  const savedReport = (prev && prev.report) || {};
+  const inputs = def.calc.inputs.map(inp => {
+    const val = savedReport[inp.key] != null ? savedReport[inp.key] : inp.value;
+    return `<div class="field">
+      <label>${RECHE.esc(inp.label)}</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="number" class="input" id="calc-${inp.key}" value="${val}" oninput="updateCalc()" style="flex:1;">
+        <span style="font-size:13px;color:var(--ink-2)">${RECHE.esc(inp.unit)}</span>
+      </div>
+    </div>`;
+  }).join("");
+
+  const outputsHtml = `<div class="out-box" id="calc-out">
+    ${def.calc.outputs.map(o => `<div class="o">
+      <span class="ol">${RECHE.esc(o.label)}</span>
+      <b id="calc-out-${o.label.replace(/\s/g, "_")}">—</b>
+    </div>`).join("")}
+  </div>`;
+
+  return `<div class="row-2">${inputs}</div>${outputsHtml}`;
+}
+
+function updateCalc() {
+  const def = RECHE.dayDef(_currentDay);
+  if (!def || def.type !== "calc") return;
+  const vars = {};
+  def.calc.inputs.forEach(inp => {
+    vars[inp.key] = Number(document.getElementById("calc-" + inp.key).value) || 0;
+  });
+  def.calc.outputs.forEach(o => {
+    let val = RECHE.evalFormula(o.formula, vars);
+    if (isNaN(val)) { val = 0; }
+    if (o.ceil) val = Math.ceil(val);
+    const el = document.getElementById("calc-out-" + o.label.replace(/\s/g, "_"));
+    if (el) el.textContent = fmt(val) + (o.unit ? " " + o.unit : "");
+  });
+}
+
+// ---- report ----
+
+function buildReportHtml(def, prev, isDone) {
+  const savedReport = (prev && prev.report) || {};
+  const inputs = def.report.map(r => {
+    const val = savedReport[r.key] != null ? savedReport[r.key] : "";
+    return `<div class="field">
+      <label>${RECHE.esc(r.label)}</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="number" class="input" id="rep-${r.key}" value="${RECHE.esc(val)}" oninput="updateReport()" style="flex:1;">
+        <span style="font-size:13px;color:var(--ink-2)">${RECHE.esc(r.unit)}</span>
+      </div>
+    </div>`;
+  }).join("");
+
+  let autoHtml = "";
+  if (def.auto && def.auto.length) {
+    const rows = def.auto.map(a =>
+      `<div class="o"><span class="ol">${RECHE.esc(a.label)}</span><b id="rep-auto-${a.label.replace(/\s/g, "_")}">—</b></div>`
+    ).join("");
+    autoHtml = `<div class="out-box" id="rep-auto-box">${rows}</div>`;
+  }
+
+  return `<div class="row-2">${inputs}</div>${autoHtml}`;
+}
+
+function updateReport() {
+  const def = RECHE.dayDef(_currentDay);
+  if (!def || def.type !== "report" || !def.auto) return;
+  const vars = {};
+  def.report.forEach(r => {
+    vars[r.key] = Number(document.getElementById("rep-" + r.key).value) || 0;
+  });
+  def.auto.forEach(a => {
+    let val = RECHE.evalFormula(a.formula, vars);
+    const el = document.getElementById("rep-auto-" + a.label.replace(/\s/g, "_"));
+    if (!el) return;
+    if (isNaN(val) || !isFinite(val)) { el.textContent = "—"; return; }
+    el.textContent = fmtDec(val, 1) + (a.unit ? " " + a.unit : "");
+  });
+}
+
+// ---- toggle check ----
+
+function toggleCheck() {
+  const cb = document.getElementById("m-check");
+  if (cb) cb.checked = !cb.checked;
+}
+
+// ---- submit ----
+
+function submitDay() {
+  const def = RECHE.dayDef(_currentDay);
+  if (!def) return;
+  let payload = {};
+
+  if (def.type === "submit") {
+    const val = (document.getElementById("m-submit").value || "").trim();
+    if (!val) { RECHE.toast("内容を入力してからお願いしますね"); return; }
+    payload = { value: val };
+
+  } else if (def.type === "action") {
+    const cb = document.getElementById("m-check");
+    if (!cb || !cb.checked) { RECHE.toast("チェックをしてから提出してくださいね"); return; }
+    payload = { value: "checked" };
+
+  } else if (def.type === "quiz") {
+    const quizEl = document.getElementById("quiz-submit-btn");
+    if (quizEl && quizEl.disabled) { RECHE.toast("先に「答え合わせ」を押してくださいね"); return; }
+    let score = 0, total = def.quiz.length;
+    const vals = {};
+    def.quiz.forEach((q, i) => {
+      const v = Number(document.getElementById("q-input-" + i).value);
+      if (Math.abs(v - q.answer) <= q.tolerance) score++;
+      vals["q" + i] = v;
+    });
+    payload = { quiz: { score, total }, ...vals };
+
+  } else if (def.type === "calc") {
+    const report = {};
+    def.calc.inputs.forEach(inp => {
+      report[inp.key] = Number(document.getElementById("calc-" + inp.key).value) || 0;
+    });
+    payload = { report };
+
+  } else if (def.type === "report") {
+    const report = {};
+    def.report.forEach(r => {
+      report[r.key] = Number(document.getElementById("rep-" + r.key).value) || 0;
+    });
+    payload = { report };
+  }
+
+  const animalsBefore = GARDEN.unlockedAnimals(RECHE.doneCount(RECHE.getState())).map(a => a.id);
+
+  const result = RECHE.submitDay(_currentDay, payload);
+  if (!result) { RECHE.toast("エラーが発生しました"); return; }
+
+  const animalsAfter = GARDEN.unlockedAnimals(RECHE.doneCount(result.state));
+  const newAnimal = animalsAfter.find(a => !animalsBefore.includes(a.id));
+
+  closeModal();
+  renderAll();
+
+  if (result.leveledUp || result.newBadges.length || result.newStreakMilestone || newAnimal) {
+    RECHE.confetti();
+    let msg = "";
+    if (newAnimal) msg += `お庭に「${newAnimal.name}」が来ました  `;
+    if (result.newStreakMilestone) msg += `${result.newStreakMilestone}日連続ボーナス達成  `;
+    if (result.leveledUp) msg += `称号アップ：${result.newLevel.name}  `;
+    if (result.newBadges.length) msg += `バッジ獲得：${result.newBadges.join("・")}`;
+    RECHE.toast(msg.trim());
+  } else {
+    RECHE.toast("提出しました。おつかれさまです。");
+  }
+}
+
+// ---- modal close ----
+
+function closeModal() {
+  document.getElementById("modal-back").classList.remove("open");
+  document.body.style.overflow = "";
+  _currentDay = null;
+}
+
+function closeModalBack(e) {
+  if (e.target === document.getElementById("modal-back")) closeModal();
+}
+
+// ---- export / download ----
+
+function downloadExport() {
+  const json = RECHE.exportState();
+  const s    = RECHE.getState();
+  const nick = (s && s.nick) ? s.nick : "reche";
+  const date = new Date().toISOString().slice(0, 10);
+  const blob = new Blob([json], { type: "application/json" });
+  const a    = document.createElement("a");
+  a.href     = URL.createObjectURL(blob);
+  a.download = `reche30_${nick}_${date}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  RECHE.toast("進捗データをダウンロードしました");
+}
+
+// calc/report のライブ計算を openDay 直後に1回実行（DOMレンダリング後）
+const _openDayOrig = openDay;
+window.openDay = function(day) {
+  _openDayOrig(day);
+  requestAnimationFrame(() => {
+    const def = RECHE.dayDef(day);
+    if (!def) return;
+    if (def.type === "calc") updateCalc();
+    if (def.type === "report") updateReport();
+  });
+};
+</script>
+</body>
+</html>

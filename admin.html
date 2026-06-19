@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Re:che 管理者ダッシュボード</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ---- admin-only styles ---- */
+.sort-btn{
+  background:none; border:none; cursor:pointer; color:var(--ink-2);
+  font-size:11px; font-weight:700; padding:2px 6px; border-radius:6px;
+  transition:background .12s;
+}
+.sort-btn:hover{ background:var(--line); }
+.sort-btn.active{ color:var(--terra); }
+
+.day-row{
+  display:flex; align-items:flex-start; gap:12px; padding:10px 0;
+  border-bottom:1px solid var(--line);
+}
+.day-row:last-child{ border-bottom:none; }
+.day-row .day-num{
+  flex-shrink:0; width:40px; height:40px; border-radius:12px;
+  background:var(--cream-2); border:1px solid var(--line);
+  display:grid; place-items:center;
+  font-size:13px; font-weight:800; color:var(--terra);
+}
+.day-row.row-done .day-num{
+  background:linear-gradient(135deg,var(--terra-soft),var(--terra));
+  color:#fff; border:none;
+}
+.day-row .day-info{ flex:1; min-width:0; }
+.day-row .day-title{
+  font-size:13px; font-weight:700; line-height:1.4;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.day-row .day-sub{ font-size:11px; color:var(--ink-2); margin-top:2px; }
+.day-row .day-content{
+  font-size:12px; color:var(--ink); background:var(--cream-2);
+  border-radius:10px; padding:8px 10px; margin-top:6px;
+  border:1px solid var(--line);
+}
+.day-row .day-fb-area{ margin-top:8px; }
+.day-row .day-fb-area textarea{
+  width:100%; min-height:60px;
+}
+
+.day-bar-row{
+  display:flex; align-items:center; gap:10px; padding:8px 0;
+  border-bottom:1px solid var(--line);
+}
+.day-bar-row:last-child{ border-bottom:none; }
+.day-bar-row .d-label{
+  width:56px; flex-shrink:0;
+  font-size:11px; font-weight:700; color:var(--terra);
+}
+.day-bar-row .d-title{
+  width:160px; flex-shrink:0; font-size:11px; color:var(--ink-2);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.day-bar-row .d-bar{ flex:1; min-width:60px; }
+.day-bar-row .d-pct{ width:42px; text-align:right; font-size:12px; font-weight:700; color:var(--ink);}
+
+.hint-list{ padding:0; margin:0; list-style:none; display:flex; flex-direction:column; gap:10px;}
+.hint-list li{
+  padding:10px 14px; background:linear-gradient(160deg,#F3FAF6,#fff);
+  border-radius:12px; border:1px solid #CDE9DD;
+  font-size:13px; line-height:1.6;
+}
+.hint-list li::before{
+  content:"";
+  display:inline-block; width:8px; height:8px; border-radius:50%;
+  background:var(--forest); margin-right:8px; vertical-align:middle;
+  flex-shrink:0;
+}
+
+.tbl-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+
+.member-detail-head{
+  display:flex; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap;
+}
+.member-detail-head .name-badge{
+  width:48px;height:48px; border-radius:50%;
+  background:linear-gradient(135deg,var(--terra-soft),var(--terra));
+  display:grid; place-items:center; color:#fff; font-weight:800; font-size:20px;
+}
+
+.import-tabs{ display:flex; gap:8px; margin-bottom:12px; }
+.tab-btn{
+  background:var(--cream-2); border:1.5px solid var(--line);
+  border-radius:999px; padding:6px 14px; font-size:12px; font-weight:700;
+  cursor:pointer; color:var(--ink-2); transition:all .12s;
+}
+.tab-btn.active{ background:var(--terra); border-color:var(--terra); color:#fff; }
+
+.file-drop{
+  border:2px dashed var(--line); border-radius:12px; padding:24px; text-align:center;
+  font-size:13px; color:var(--ink-2); cursor:pointer; transition:border-color .15s;
+}
+.file-drop:hover{ border-color:var(--terra-soft); }
+.file-drop input[type=file]{ display:none; }
+
+@media(max-width:560px){
+  .day-bar-row .d-title{ display:none; }
+  .day-bar-row .d-label{ width:44px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
+<header class="app-head">
+  <div class="row">
+    <div class="brand">
+      <div class="logo">R</div>
+      <div>
+        Re:che
+        <small>管理者ダッシュボード</small>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn btn-ghost btn-sm" onclick="openImport()">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="vertical-align:-2px;margin-right:4px">
+        <path d="M8 1v9M4 7l4 4 4-4M2 13h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      データ取込
+    </button>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN
+============================================================ -->
+<main class="wrap" style="padding-top:18px;">
+
+  <!-- KPI -->
+  <div class="hero">
+    <p class="hello">メンバーの進捗を一覧で確認できます</p>
+    <div class="metric" id="kpiCards">
+      <!-- JS で生成 -->
+    </div>
+  </div>
+
+  <!-- メンバー一覧 -->
+  <div class="sec-title">
+    <h2>メンバー一覧</h2>
+    <span class="pill" id="memberCount">0名</span>
+    <div style="margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+      <span style="font-size:11px;color:var(--ink-2)">並び替え:</span>
+      <button class="sort-btn active" id="sortFollowBtn" onclick="setSort('follow')">要フォロー優先</button>
+      <button class="sort-btn" id="sortRateBtn" onclick="setSort('rate')">提出率</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table class="table" id="memberTable">
+      <thead>
+        <tr>
+          <th>ニックネーム</th>
+          <th>称号</th>
+          <th>提出</th>
+          <th style="min-width:90px"></th>
+          <th>連続</th>
+          <th>ポイント</th>
+          <th>最終更新</th>
+          <th>状態</th>
+        </tr>
+      </thead>
+      <tbody id="memberTbody"></tbody>
+    </table>
+  </div>
+
+  <!-- Day別 提出率 -->
+  <div class="sec-title" style="margin-top:32px;">
+    <h2>Day別 提出率</h2>
+    <span class="pill">離脱ポイント可視化</span>
+  </div>
+  <div style="background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:16px 18px;">
+    <div id="dayBars"><!-- JS で生成 --></div>
+  </div>
+
+  <!-- 提出率を上げるヒント -->
+  <div class="sec-title" style="margin-top:32px;">
+    <h2>提出率を上げるヒント</h2>
+  </div>
+  <ul class="hint-list">
+    <li>離脱が集中する Day に備えて、前日のうちに声かけ・ボイスを手厚くする。予告があるだけで翌日の行動率が変わります。</li>
+    <li>コメントは「即・具体・優しく」。提出内容を1行で褒めてから改善点を添えると、次の提出が早まります（圧をかけず価値を届ける）。</li>
+    <li>催促より関心。「順調ですか？」の一言でスレッドが動き、脱落を防ぎます。数字で結果を伝えると自己効力感が上がります。</li>
+  </ul>
+
+</main>
+
+<!-- ============================================================
+     メンバー詳細 モーダル
+============================================================ -->
+<div class="modal-back" id="memberModal" onclick="closeMemberModal(event)">
+  <div class="modal" id="memberModalInner">
+    <button class="close-x" onclick="closeMemberModalDirect()">&#x2715;</button>
+    <div id="memberModalBody"><!-- JS で生成 --></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     データ取込 モーダル
+============================================================ -->
+<div class="modal-back" id="importModal" onclick="closeImportModal(event)">
+  <div class="modal" id="importModalInner">
+    <button class="close-x" onclick="closeImportModalDirect()">&#x2715;</button>
+    <h3 style="margin:0 0 8px;">データを取り込む</h3>
+    <p style="font-size:13px;color:var(--ink-2);margin:0 0 14px;">メンバーがエクスポートしたJSONを貼り付けるか、ファイルを選択してください。</p>
+
+    <div class="import-tabs">
+      <button class="tab-btn active" id="tabPaste" onclick="switchTab('paste')">テキスト貼り付け</button>
+      <button class="tab-btn" id="tabFile" onclick="switchTab('file')">ファイル選択</button>
+    </div>
+
+    <div id="panePaste">
+      <textarea class="input" id="importTextarea" style="min-height:140px;" placeholder='ユーザーの「エクスポート」で出たJSONをここに貼り付けてください。'></textarea>
+    </div>
+    <div id="paneFile" style="display:none;">
+      <label class="file-drop" for="importFileInput">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="display:block;margin:0 auto 8px">
+          <path d="M12 3v11M7 9l5 5 5-5M4 19h16" stroke="var(--terra-soft)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        クリックしてJSONファイルを選択<br>
+        <span style="font-size:11px;">.json ファイルに対応</span>
+        <input type="file" id="importFileInput" accept=".json,application/json" onchange="handleFileSelect(event)">
+      </label>
+      <p id="fileNameLabel" style="font-size:12px;color:var(--ink-2);margin:6px 0 0;text-align:center;"></p>
+    </div>
+
+    <div class="m-actions" style="margin-top:16px;">
+      <button class="btn btn-pri" onclick="doImport()">取り込む</button>
+      <button class="btn btn-ghost" onclick="closeImportModalDirect()">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<script src="curriculum.js"></script>
+<script src="app-core.js"></script>
+<script>
+/* =====================================================================
+   admin.html  インラインJS
+   依存: styles.css / curriculum.js / app-core.js (RECHE global)
+   ===================================================================== */
+
+/* ---- ユーティリティ ---- */
+function relativeDate(isoStr){
+  if (!isoStr) return "—";
+  const now = new Date();
+  const d   = new Date(isoStr);
+  const diff = Math.floor((now - d) / 86400000);
+  if (diff === 0) return "今日";
+  if (diff === 1) return "昨日";
+  return diff + "日前";
+}
+function fmtNum(n){
+  if (n == null || isNaN(n)) return "—";
+  return Number(n).toLocaleString("ja-JP");
+}
+function pct(a, b){
+  if (!b) return 0;
+  return Math.round(a / b * 100);
+}
+function isFollowNeeded(member){
+  const today = RECHE.todayISO();
+  const lastUpd = member.updatedAt ? member.updatedAt.slice(0,10) : null;
+  const daysSince = lastUpd ? RECHE.daysBetween(lastUpd, today) : 999;
+  const rate = pct(member.done || 0, 30);
+  return rate < 30 || daysSince >= 3;
+}
+
+/* ---- 並び替え状態 ---- */
+let currentSort = "follow";
+function setSort(mode){
+  currentSort = mode;
+  document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
+  if (mode === "follow") document.getElementById("sortFollowBtn").classList.add("active");
+  else                   document.getElementById("sortRateBtn").classList.add("active");
+  renderAll();
+}
+
+/* ---- KPI カード描画 ---- */
+function renderKPI(members){
+  const total = members.length;
+  const today = RECHE.todayISO();
+
+  // 平均提出率
+  const avgRate = total
+    ? Math.round(members.reduce((s, m) => s + pct(m.done || 0, 30), 0) / total)
+    : 0;
+
+  // 本日の提出数（updatedAt が今日のメンバー数）
+  const todayCount = members.filter(m =>
+    m.updatedAt && m.updatedAt.slice(0, 10) === today
+  ).length;
+
+  // 要フォロー
+  const followCount = members.filter(isFollowNeeded).length;
+
+  const cards = [
+    { n: fmtNum(total),      l: "メンバー数",       sub: "名" },
+    { n: avgRate + "%",      l: "平均提出率",        sub: "" },
+    { n: fmtNum(todayCount), l: "本日の提出",        sub: "名" },
+    { n: fmtNum(followCount),l: "要フォロー",        sub: "名", warn: followCount > 0 },
+  ];
+  document.getElementById("kpiCards").innerHTML = cards.map(c => `
+    <div class="m">
+      <div class="n" style="${c.warn ? 'color:var(--terra-d);' : ''}">${RECHE.esc(c.n)}</div>
+      <div class="l">${RECHE.esc(c.l)}</div>
+    </div>
+  `).join("");
+}
+
+/* ---- メンバー一覧 描画 ---- */
+function renderMemberTable(members){
+  const sorted = [...members].sort((a, b) => {
+    if (currentSort === "follow"){
+      const fa = isFollowNeeded(a) ? 0 : 1;
+      const fb = isFollowNeeded(b) ? 0 : 1;
+      if (fa !== fb) return fa - fb;
+    }
+    // 提出率 昇順（低い順）
+    return pct(a.done || 0, 30) - pct(b.done || 0, 30);
+  });
+
+  document.getElementById("memberCount").textContent = members.length + "名";
+  document.getElementById("memberTbody").innerHTML = sorted.map(m => {
+    const rate = pct(m.done || 0, 30);
+    const follow = isFollowNeeded(m);
+    return `
+      <tr style="cursor:pointer;" onclick="openMemberModal('${RECHE.esc(m.nick)}')">
+        <td><strong>${RECHE.esc(m.nick)}</strong></td>
+        <td>
+          <span style="font-size:11px;color:var(--ink-2);">Lv${m.lv || 1}</span>
+          <span style="margin-left:4px;font-size:12px;">${RECHE.esc(m.level || "—")}</span>
+        </td>
+        <td style="white-space:nowrap;">${m.done || 0}<span style="color:var(--ink-2);font-size:11px;">/30</span></td>
+        <td>
+          <div class="mini-bar"><i style="width:${rate}%"></i></div>
+          <div style="font-size:10px;color:var(--ink-2);margin-top:2px;">${rate}%</div>
+        </td>
+        <td>${m.streak || 0}日</td>
+        <td>${fmtNum(m.points || 0)}</td>
+        <td style="white-space:nowrap;">${relativeDate(m.updatedAt)}</td>
+        <td>
+          <span class="tag ${follow ? 'warn' : 'good'}">${follow ? '要フォロー' : '順調'}</span>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  if (sorted.length === 0){
+    document.getElementById("memberTbody").innerHTML =
+      '<tr><td colspan="8" style="text-align:center;color:var(--ink-2);padding:24px;">メンバーがいません。「データ取込」でJSONを読み込んでください。</td></tr>';
+  }
+}
+
+/* ---- Day 別 提出率 描画 ---- */
+function renderDayBars(members){
+  const total = members.length;
+  const container = document.getElementById("dayBars");
+  if (!total){ container.innerHTML = '<p style="font-size:13px;color:var(--ink-2);">メンバーデータがありません。</p>'; return; }
+
+  let html = "";
+  for (let d = 1; d <= 30; d++){
+    const def = RECHE.dayDef(d);
+    const doneCount = members.filter(m => m.progress && m.progress[d] && m.progress[d].done).length;
+    const rate = pct(doneCount, total);
+    const low = rate < 50;
+    html += `
+      <div class="day-bar-row">
+        <div class="d-label" style="${low ? 'color:var(--terra-d);' : ''}">Day ${d}</div>
+        <div class="d-title">${RECHE.esc(def ? def.title : "")}</div>
+        <div class="d-bar">
+          <div class="mini-bar">
+            <i style="width:${rate}%;background:${low ? 'linear-gradient(90deg,var(--rose),var(--terra-d))' : ''}"></i>
+          </div>
+        </div>
+        <div class="d-pct" style="${low ? 'color:var(--terra-d);' : ''}">${rate}%</div>
+      </div>
+    `;
+  }
+  container.innerHTML = html;
+}
+
+/* ---- メンバー詳細 モーダル ---- */
+function openMemberModal(nick){
+  const roster = RECHE.roster();
+  const m = roster[nick];
+  if (!m){ RECHE.toast("メンバーが見つかりません"); return; }
+
+  const rate = pct(m.done || 0, 30);
+  const follow = isFollowNeeded(m);
+  const initial = (nick && nick.length) ? nick[0] : "?";
+
+  let daysHtml = "";
+  for (let d = 1; d <= 30; d++){
+    const def = RECHE.dayDef(d);
+    const prog = m.progress && m.progress[d];
+    const done = prog && prog.done;
+    const fbObj = RECHE.getFeedbackObj(nick, d);
+
+    // 提出内容の整形
+    let content = "";
+    if (done && prog){
+      if (prog.value){
+        content = RECHE.esc(prog.value);
+      } else if (prog.report && typeof prog.report === "object"){
+        content = Object.entries(prog.report)
+          .map(([k, v]) => `${RECHE.esc(k)}: ${RECHE.esc(String(v))}`)
+          .join(" / ");
+      } else if (prog.quiz){
+        content = `クイズ: ${prog.quiz.score}/${prog.quiz.total} 問正解`;
+      }
+    }
+
+    daysHtml += `
+      <div class="day-row ${done ? 'row-done' : ''}">
+        <div class="day-num">${d}</div>
+        <div class="day-info">
+          <div class="day-title">${RECHE.esc(def ? def.title : "—")}</div>
+          <div class="day-sub">${RECHE.esc(def ? def.stage : "")} &nbsp;|&nbsp; ${done ? '<span style="color:var(--forest);font-weight:700;">済</span>' : '<span style="color:var(--ink-2);">未提出</span>'}</div>
+          ${done && content ? `<div class="day-content">${content}</div>` : ""}
+          ${done ? `
+          <div class="day-fb-area">
+            <div class="field">
+              <label style="font-size:11px;color:var(--terra);font-weight:700;">コーチからのコメント</label>
+              <textarea class="input" id="fb-${nick}-${d}" style="min-height:60px;font-size:12px;" placeholder="ここにコメントを入力…">${fbObj ? RECHE.esc(fbObj.text) : ""}</textarea>
+              <div style="display:flex;gap:8px;margin-top:6px;">
+                <button class="btn btn-forest btn-sm" onclick="saveFeedback('${RECHE.esc(nick)}',${d})">コメント保存</button>
+                ${fbObj ? `<button class="btn btn-ghost btn-sm" onclick="deleteFeedback('${RECHE.esc(nick)}',${d})">削除</button>` : ""}
+              </div>
+              ${fbObj ? `<div style="font-size:11px;color:var(--ink-2);margin-top:4px;">${relativeDate(fbObj.at)} 保存済</div>` : ""}
+            </div>
+          </div>
+          ` : ""}
+        </div>
+      </div>
+    `;
+  }
+
+  document.getElementById("memberModalBody").innerHTML = `
+    <div class="member-detail-head">
+      <div class="name-badge">${RECHE.esc(initial)}</div>
+      <div>
+        <div style="font-size:20px;font-weight:800;">${RECHE.esc(nick)}</div>
+        <div style="font-size:12px;color:var(--ink-2);">Lv${m.lv || 1} &nbsp;${RECHE.esc(m.level || "")} &nbsp;&nbsp; ${m.streak || 0}日連続 &nbsp;&nbsp; ${fmtNum(m.points || 0)}pt</div>
+      </div>
+      <div style="margin-left:auto;text-align:right;">
+        <div style="font-size:22px;font-weight:800;color:var(--terra);">${rate}%</div>
+        <div style="font-size:11px;color:var(--ink-2);">提出率 (${m.done || 0}/30)</div>
+        <span class="tag ${follow ? 'warn' : 'good'}" style="margin-top:4px;display:inline-block;">${follow ? '要フォロー' : '順調'}</span>
+      </div>
+    </div>
+    <div style="margin-bottom:8px;">
+      <div class="bar"><i style="width:${rate}%"></i></div>
+      <div class="bar-meta"><span>提出 ${m.done || 0}/30日</span><span>${rate}%</span></div>
+    </div>
+    ${daysHtml}
+  `;
+
+  document.getElementById("memberModal").classList.add("open");
+}
+
+function closeMemberModal(e){
+  if (e && e.target !== document.getElementById("memberModal")) return;
+  document.getElementById("memberModal").classList.remove("open");
+}
+function closeMemberModalDirect(){
+  document.getElementById("memberModal").classList.remove("open");
+}
+
+/* ---- フィードバック保存 ---- */
+function saveFeedback(nick, day){
+  const el = document.getElementById("fb-" + nick + "-" + day);
+  if (!el) return;
+  const text = el.value.trim();
+  RECHE.setFeedback(nick, day, text);
+  RECHE.toast(text ? "コメントを保存しました" : "コメントを削除しました");
+  // ボタン横の「保存済」表示を更新（モーダル再描画は重いので簡易更新）
+  const savedNote = el.parentElement.querySelector(".saved-note");
+  if (savedNote) savedNote.textContent = text ? "今日 保存済" : "";
+}
+function deleteFeedback(nick, day){
+  RECHE.setFeedback(nick, day, "");
+  RECHE.toast("コメントを削除しました");
+  openMemberModal(nick); // 再描画
+}
+
+/* ---- データ取込 モーダル ---- */
+function openImport(){
+  document.getElementById("importModal").classList.add("open");
+  document.getElementById("importTextarea").value = "";
+  document.getElementById("fileNameLabel").textContent = "";
+  switchTab("paste");
+}
+function closeImportModal(e){
+  if (e && e.target !== document.getElementById("importModal")) return;
+  document.getElementById("importModal").classList.remove("open");
+}
+function closeImportModalDirect(){
+  document.getElementById("importModal").classList.remove("open");
+}
+function switchTab(mode){
+  document.getElementById("panePaste").style.display = mode === "paste" ? "" : "none";
+  document.getElementById("paneFile").style.display  = mode === "file"  ? "" : "none";
+  document.getElementById("tabPaste").classList.toggle("active", mode === "paste");
+  document.getElementById("tabFile").classList.toggle("active",  mode === "file");
+}
+function handleFileSelect(e){
+  const file = e.target.files[0];
+  if (!file) return;
+  document.getElementById("fileNameLabel").textContent = "選択: " + file.name;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById("importTextarea").value = ev.target.result;
+    switchTab("paste");
+  };
+  reader.readAsText(file);
+}
+function doImport(){
+  const text = document.getElementById("importTextarea").value.trim();
+  if (!text){ RECHE.toast("JSONを貼り付けてください"); return; }
+  try {
+    const count = RECHE.importRosterJSON(text);
+    RECHE.toast(count + "名のデータを取り込みました");
+    closeImportModalDirect();
+    renderAll();
+  } catch(e){
+    RECHE.toast("取込エラー: JSONの形式を確認してください");
+  }
+}
+
+/* ---- 全体描画 ---- */
+function renderAll(){
+  const roster = RECHE.roster();
+  const members = Object.values(roster);
+  renderKPI(members);
+  renderMemberTable(members);
+  renderDayBars(members);
+}
+
+/* ---- 初期化 ---- */
+document.addEventListener("DOMContentLoaded", function(){
+  RECHE.seedDemoIfEmpty();
+  renderAll();
+});
+</script>
+</body>
+</html>
