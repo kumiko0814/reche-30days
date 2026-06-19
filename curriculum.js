@@ -35,7 +35,7 @@ const RECHE_CURRICULUM = [
     placeholder: "例）通勤中=リサーチ / 昼休み=加工 / 夜22:00=出品 …"
   },
   {
-    day: 3, stage: "準備編", voice: "与える人で在れ",
+    day: 3, stage: "準備編", voice: "与える人である",
     title: "目標金額と目的を決めよう",
     detail: "「何のために・いくら欲しいか」を具体的に書きます。①目的（例：習い事代/自分へのご褒美/繰上げ返済）②必要な金額 ③そのために断つムダ遣い。ふわっとではなく数字で。例）習い事2万＋自己投資3万＝月5万の利益目標。所要時間：約10分。",
     type: "submit", points: 120, badge: "はじめの一歩",
@@ -44,7 +44,7 @@ const RECHE_CURRICULUM = [
 
   /* ---------- STAGE 2 数字編 ---------- */
   {
-    day: 4, stage: "数字編", voice: "素直さ在ってこそ",
+    day: 4, stage: "数字編", voice: "素直誠実である",
     title: "販売率と利益率クイズ（全3問）",
     detail: "数字を味方にする回。販売率＝販売数÷出品数×100。利益率＝利益額÷売上額×100。下の3問に答えてね。電卓OK！全問正解でボーナスポイント。",
     type: "quiz", points: 150, badge: "数字に強い",
@@ -79,7 +79,7 @@ const RECHE_CURRICULUM = [
     checklabel: "仕入れサイトに登録できた／不用品を出品準備した"
   },
   {
-    day: 6, stage: "数字編", voice: "あきらめない",
+    day: 6, stage: "数字編", voice: "僻まない",
     title: "必要な出品数を計算しよう",
     detail: "目標から逆算します。下の計算機に「月の目標利益・利益率・1品の平均単価」を入れると、必要な出品総額と1日あたりの出品数が出ます。出た数字を心に留めて出品していきましょう。",
     type: "calc", points: 150, badge: null,
@@ -113,7 +113,7 @@ const RECHE_CURRICULUM = [
     placeholder: "例）1品あたり 約40分（撮影10/加工10/リサーチ10/説明文10）"
   },
   {
-    day: 9, stage: "基礎編", voice: "理想を口に出す",
+    day: 9, stage: "基礎編", voice: "質問の仕方",
     title: "出品にかかる時間を計ろう②",
     detail: "昨日の続き。今日も出品して、1品あたりの平均出品時間を提出します。繰り返すほどスピードは上がります。昨日との差も書いてみてね。",
     type: "submit", points: 120, badge: null,
@@ -127,7 +127,7 @@ const RECHE_CURRICULUM = [
     placeholder: "例）1時間で 3品 出品できた！"
   },
   {
-    day: 11, stage: "基礎編", voice: "頭を使う",
+    day: 11, stage: "基礎編", voice: "頭を使おう",
     title: "在庫管理表を作ってみよう",
     detail: "売上管理と在庫管理は別もの。①商品が探しやすい ②売れ残りが防げる ③次の仕入れ計画が立つ。配布テンプレをコピーして、今ある仕入れ品・不用品を記入してみましょう。まずは作るのが目標。",
     type: "action", points: 120, badge: null,
@@ -141,7 +141,7 @@ const RECHE_CURRICULUM = [
     placeholder: "在庫管理表のURL（Googleスプレッドシート）"
   },
   {
-    day: 13, stage: "基礎編", voice: "誰のために頑張るのか",
+    day: 13, stage: "基礎編", voice: "誰のために頑張るのか？動機を沢山作ろう",
     title: "在庫のトータル金額を計算",
     detail: "①在庫の仕入れ原価トータル（出品中も含む。不用品は0円でOK）②メルカリで販売中の商品トータル金額。この2つを出すと、資産と売上予想が見えます。下に2つの金額を入力。",
     type: "report", points: 150, badge: null,
@@ -170,14 +170,14 @@ const RECHE_CURRICULUM = [
     ]
   },
   {
-    day: 15, stage: "振り返り編", voice: "あきらめなければ終わらない",
+    day: 15, stage: "振り返り編", voice: "ごめんなさいではなく、ありがとうを",
     title: "自分の課題と改善点を上げる",
     detail: "11〜14日の数字から、いま詰まっている所を言葉に。よくあるのは「出品数が足りない」「出品金額が少ない」「在庫が足りない」。目標とのギャップを見て、課題と改善策を1つ提出しましょう。",
     type: "submit", points: 150, badge: null,
     placeholder: "例）課題=出品数が足りない / 改善=リサーチを10分に短縮し1日3品出す"
   },
   {
-    day: 16, stage: "振り返り編", voice: "才能ではなく数字で語る",
+    day: 16, stage: "振り返り編", voice: "感情ではなく数字で語ろう",
     title: "数字に強くなる勉強会（アウトプット）",
     detail: "配布の勉強会動画を見て、①気づいたこと ②明日から実践すること を書きます。数字を知れば売上が見え、数字を使えば未来が変わる。学びを言葉にして提出してね。",
     type: "submit", points: 150, badge: null,
@@ -200,56 +200,56 @@ const RECHE_CURRICULUM = [
 
   /* ---------- STAGE 6 出品WEEK（7日チャレンジ） ---------- */
   {
-    day: 19, stage: "出品WEEK", voice: "感謝の連鎖",
+    day: 19, stage: "出品WEEK", voice: "感謝の威力",
     title: "出品WEEK 1日目｜準備8割",
     detail: "1週間で30品チャレンジ開始！カギは準備8割・行動2割。①今週のスケジュール確認 ②1日どの時間を出品にあてるか ③出品する商品候補をストック。今日の出品数も記録してね。",
     type: "submit", points: 150, badge: "出品WEEK突入",
     placeholder: "今日の出品数◯品／累計◯品／気づき…"
   },
   {
-    day: 20, stage: "出品WEEK", voice: "当たり前を異常値でやる",
+    day: 20, stage: "出品WEEK", voice: "当たり前の事を異常値でやれ",
     title: "出品WEEK 2日目｜写真で9割",
     detail: "今日のテーマは写真。1枚目（トップ画像）で印象が決まります。明るさ・背景・角度・映りを意識。「欲しい！」と思える1枚を。今日の出品数を記録して提出。",
     type: "submit", points: 150, badge: null,
     placeholder: "今日の出品数◯品／累計◯品／写真の工夫…"
   },
   {
-    day: 21, stage: "出品WEEK", voice: "オペレーション力",
+    day: 21, stage: "出品WEEK", voice: "リフレーミング",
     title: "出品WEEK 3日目｜タイトル&説明文",
     detail: "検索に引っかかるキーワードを。タイトルは40文字を埋める意識で（ブランド・サイズ・色・状態）。説明文はシンプルで親切に。今日の出品数を記録して提出。",
     type: "submit", points: 150, badge: null,
     placeholder: "今日の出品数◯品／累計◯品／使ったキーワード…"
   },
   {
-    day: 22, stage: "出品WEEK", voice: "アソシエイトであれ",
+    day: 22, stage: "出品WEEK", voice: "アソシエイト、ディソシエイト",
     title: "出品WEEK 4日目｜価格は戦略",
     detail: "相場をリサーチし、利益を残しつつ売れる価格帯に。値下げ交渉を想定して少し上から設定するのもコツ。今日の出品数を記録して提出。",
     type: "submit", points: 150, badge: null,
     placeholder: "今日の出品数◯品／累計◯品／価格の根拠…"
   },
   {
-    day: 23, stage: "出品WEEK", voice: "全て自己責任である",
+    day: 23, stage: "出品WEEK", voice: "正しい努力をすること",
     title: "出品WEEK 5日目｜一軍・二軍",
     detail: "一軍＝利益が見込める/季節物/人気/きれいな商品。二軍＝回転重視・在庫整理向け。毎日全部に全力ではなくバランスを。今日の出品数を記録して提出。",
     type: "submit", points: 150, badge: null,
     placeholder: "今日の出品数◯品／累計◯品／一軍・二軍の振り分け…"
   },
   {
-    day: 24, stage: "出品WEEK", voice: "ハードワークに頼りすぎない",
+    day: 24, stage: "出品WEEK", voice: "負け癖をつけるな",
     title: "出品WEEK 6日目｜70点で出す",
     detail: "完璧主義で止まらないこと。70%の出来でOK、まず出す。1つでも前進すれば昨日の自分を超えています。今日の出品数を記録して提出。",
     type: "submit", points: 150, badge: null,
     placeholder: "今日の出品数◯品／累計◯品／今日の前進…"
   },
   {
-    day: 25, stage: "出品WEEK", voice: "正しく努力する",
+    day: 25, stage: "出品WEEK", voice: "全て自己責任である",
     title: "出品WEEK 7日目｜ラストスパート",
     detail: "いよいよ最終日！一軍・二軍のバランスを意識して出し切ろう。1週間の合計出品数を振り返って提出。走り切った自分をねぎらってね。",
     type: "submit", points: 200, badge: "30品チャレンジ完走",
     placeholder: "1週間の合計出品数◯品／やり切った感想…"
   },
   {
-    day: 26, stage: "出品WEEK", voice: "数字で振り返る",
+    day: 26, stage: "出品WEEK", voice: "テクニックに頼るな",
     title: "出品WEEKを振り返る",
     detail: "1週間の結果を数字で確認。①出品できた数 ②売れた数 ③気づいた勝ちパターン。続けられる仕組み（出品の習慣化）を1つ決めて提出しましょう。",
     type: "submit", points: 150, badge: null,
@@ -265,7 +265,7 @@ const RECHE_CURRICULUM = [
     placeholder: "気づき：… ／ 明日からやること：…"
   },
   {
-    day: 28, stage: "飛躍編", voice: "Whyを5回くり返す",
+    day: 28, stage: "飛躍編", voice: "whyからはじめよ",
     title: "月報を出す（数字＋3ヶ月計画）",
     detail: "1ヶ月の振り返り。売上・利益・利益率・出品数・販売数を入れて、できたこと/できなかったことを言葉に。さらに3ヶ月後のマイルストーンを1ヶ月ごとに書きましょう。",
     type: "report", points: 220, badge: "1ヶ月完走",
@@ -281,7 +281,7 @@ const RECHE_CURRICULUM = [
     ]
   },
   {
-    day: 29, stage: "飛躍編", voice: "予定と成果を結びつける",
+    day: 29, stage: "飛躍編", voice: "事実と感情を切り分けよう",
     title: "成果を記録して提出",
     detail: "月報フォームに沿って数字を提出します。予定（行動）と成果（数字）を結びつけて見ると、次の改善点がクリアに。毎月の振り返りが、卒業後も伸び続ける自走力になります。",
     type: "submit", points: 150, badge: null,

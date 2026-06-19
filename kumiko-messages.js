@@ -8,11 +8,15 @@ window.KUMIKO = {
   name: "くみこ",
   role: "Re:che 代表",
   avatar: "assets/kumiko.png",   // ← ここにくみこの画像（正方形 400px以上推奨）を置く
-  // ボイス：assets/voice/ に day01.m4a 〜 day30.m4a を置くだけで自動で再生ボタンが出ます。
-  // 別名/別形式にしたい日だけ audio に個別指定（例 1:"assets/voice/intro.mp3"）。
+  // ボイス：Driveの本物の音声(Day1〜30)を assets/voice/dayNN.m4a に同梱して再生します。
+  // 差し替えたい日は audio に別パスを指定すれば上書きできます。
   audioBase: "assets/voice/day",
   audioExt:  ".m4a",
-  audio: {},
+  audio: (function () {
+    var m = {};
+    for (var d = 1; d <= 30; d++) m[d] = "assets/voice/day" + ("0" + d).slice(-2) + ".m4a";
+    return m;  // 全日に同梱音声を割り当て（file://でも再生ボタンを表示）
+  })(),
   messages: {
     1:  "ようこそ、Re:cheへ。まずは今の毎日を眺めるところから。気負わず、できるところだけで大丈夫ですよ☺",
     2:  "時間は「見つける」もの。すきま5分でも立派な一歩です。完璧じゃなくていいからね♡",

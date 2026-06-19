@@ -1,0 +1,4 @@
+<!doctype html><meta charset="utf-8"><body style="font:26px sans-serif;padding:20px"><div id=s>loading…</div>
+<script>const a=new Audio();a.src="assets/voice/day01.m4a";const s=document.getElementById('s');
+a.addEventListener('loadedmetadata',()=>s.textContent='OK duration='+Math.round(a.duration)+'s');
+a.addEventListener('error',()=>s.textContent='ERROR code='+(a.error&&a.error.code));a.load();</script></body>
