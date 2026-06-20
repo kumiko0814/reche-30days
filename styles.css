@@ -332,6 +332,17 @@ textarea.input{ min-height:96px; resize:vertical; }
 .dex:not(.on) .dex-ic{ filter:grayscale(1) opacity(.35); }
 .dex-nm{ font-size:10px; color:var(--ink-2); margin-top:4px; font-weight:700; }
 
+/* ---------- 2日以上未提出で画面を暗く（やさしいリマインド） ---------- */
+.dim-overlay{ position:fixed; inset:0; background:rgba(16,11,8,.66); z-index:55;
+  pointer-events:none; opacity:0; transition:opacity .8s ease; }
+body.dim .dim-overlay{ opacity:1; }
+.dim-note{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(20px);
+  z-index:57; background:#2b211c; color:#FBF5EC; border:1px solid #4d3d33; border-radius:16px;
+  padding:13px 20px; font-size:13.5px; line-height:1.6; box-shadow:0 14px 30px rgba(0,0,0,.4);
+  max-width:90%; text-align:center; opacity:0; pointer-events:none; transition:.6s; }
+body.dim .dim-note{ opacity:1; transform:translateX(-50%) translateY(0); }
+.dim-note b{ color:#F0C0B5; }
+
 /* ---------- もりくみからの一言（吹き出し＋透過写真） ---------- */
 .mk-card{ position:relative; display:flex; align-items:flex-end; gap:6px;
   background:linear-gradient(160deg,#FFF3EA,#FFFDF9); border:1px solid var(--rose);

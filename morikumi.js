@@ -57,7 +57,9 @@ window.MORIKUMI = {
     "assets/morikumi/p1.png",
     "assets/morikumi/p2.png",
     "assets/morikumi/p3.png",
-    "assets/morikumi/p4.png"
+    "assets/morikumi/p4.png",
+    "assets/morikumi/p5.png",
+    "assets/morikumi/p6.png"
   ],
 
   daily: {},   // 特定日に固定したい時だけ { "YYYY-MM-DD": {text, photo} }

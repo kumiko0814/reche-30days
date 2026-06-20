@@ -206,6 +206,10 @@
   </div><!-- /wrap -->
 </div><!-- /app -->
 
+<!-- ===================== 2日以上未提出のリマインド暗転 ===================== -->
+<div class="dim-overlay" id="dim-overlay"></div>
+<div class="dim-note" id="dim-note"></div>
+
 <!-- ===================== DAY MODAL ===================== -->
 <div class="modal-back" id="modal-back" onclick="closeModalBack(event)">
   <div class="modal" id="modal-inner">
@@ -290,6 +294,33 @@ function renderAll() {
   renderStamps(s);
   renderRanking(s);
   renderBadges(s);
+  renderDim(s);
+}
+
+// ---------- 2日以上未提出で画面を暗くする（やさしいリマインド） ----------
+function daysSinceLastSubmit(s) {
+  if (!s) return 0;
+  let last = null;
+  for (const k in s.progress) {
+    const p = s.progress[k];
+    if (p && p.done && p.doneAt) {
+      const iso = String(p.doneAt).slice(0, 10);
+      if (!last || iso > last) last = iso;
+    }
+  }
+  const ref = last || s.startDate || RECHE.todayISO();
+  return RECHE.daysBetween(ref, RECHE.todayISO());
+}
+function renderDim(s) {
+  const note = document.getElementById("dim-note");
+  const gap  = daysSinceLastSubmit(s);
+  if (s && gap >= 2) {
+    document.body.classList.add("dim");
+    note.innerHTML = `<b>${gap}日</b>、お休みしていましたね。<br>今日のミッションを1つ出すと、お庭にも光が戻りますよ☺`;
+  } else {
+    document.body.classList.remove("dim");
+    note.innerHTML = "";
+  }
 }
 
 // ---------- くみこから今日のメッセージ ----------

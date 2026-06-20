@@ -65,8 +65,8 @@
   function nextAnimal(done){ return ANIMALS.find(a=>done<a.need) || null; }
 
   function render(state){
-    const done = RECHE.doneCount(state);
-    const lv   = RECHE.level(RECHE.totalPoints(state)).lv;
+    const done = RECHE.doneCount(state);            // 課題提出数で成長
+    const stage = Math.min(6, Math.floor(done / 5) + 1); // 5提出ごとにお店ランクUP
     const got  = unlockedAnimals(done);
     const next = nextAnimal(done);
 
@@ -102,14 +102,14 @@
         <div class="g-scene">
           <div class="g-sky"></div>
           <div class="g-ground"></div>
-          <div class="g-house">${houseSvg(lv)}</div>
+          <div class="g-house">${houseSvg(stage)}</div>
           ${plants}
           ${animals}
           <div class="g-name">${RECHE.esc(state.nick)}のお庭</div>
         </div>
         <div class="g-meta">
-          <span class="g-stat">お店：<b>${RECHE.esc(HOUSE_NAMES[Math.min(5,lv-1)])}</b></span>
-          <span class="g-stat">葉っぱ <b>${done}</b></span>
+          <span class="g-stat">お店：<b>${RECHE.esc(HOUSE_NAMES[stage-1])}</b></span>
+          <span class="g-stat">提出 <b>${done}</b></span>
           <span class="g-stat">おともだち <b>${got.length}</b>／${ANIMALS.length}</span>
         </div>
         <div class="g-hint">${hint}</div>

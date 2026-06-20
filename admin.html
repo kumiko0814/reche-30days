@@ -81,6 +81,19 @@
 
 .tbl-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
 
+.how-banner{
+  background:linear-gradient(160deg,#FFF7F0,#fff); border:1px solid var(--rose,#EBD3C8);
+  border-radius:var(--radius); padding:18px 20px; margin-bottom:16px; box-shadow:var(--shadow-sm);
+}
+.how-banner .how-h{ font-size:15px; font-weight:800; color:var(--terra); margin-bottom:10px; }
+.how-banner .how-steps{ margin:0 0 12px; padding-left:20px; }
+.how-banner .how-steps li{ font-size:13.5px; line-height:1.85; color:var(--ink); }
+.how-banner .how-steps b{ color:var(--terra-d,var(--terra)); }
+.how-banner .how-note{
+  font-size:12px; line-height:1.7; color:var(--ink-2); background:#FBF5EC;
+  border-radius:12px; padding:11px 13px; margin:0;
+}
+
 .member-detail-head{
   display:flex; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap;
 }
@@ -139,6 +152,26 @@
      MAIN
 ============================================================ -->
 <main class="wrap" style="padding-top:18px;">
+
+  <!-- 講師向け 使い方ガイド -->
+  <div class="how-banner">
+    <div class="how-h">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align:-2px;margin-right:5px">
+        <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M8 7v4M8 5h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      課題が提出されたら、ここを見ればわかります
+    </div>
+    <ol class="how-steps">
+      <li><b>下の「メンバー一覧」</b>で誰がどこまで提出したかが一目でわかります（提出数・最終更新・要フォロー）。</li>
+      <li><b>名前をタップ</b>すると、その人が<b>各Dayに実際に書いた提出内容</b>が読めます。その場で<b>フィードバックを入力→保存</b>できます。</li>
+      <li><b>「Day別 提出率」</b>で、みんながどのDayで止まりやすいか（離脱ポイント）がわかります。</li>
+    </ol>
+    <p class="how-note">
+      ※ 現在は<b>テスト版</b>のため、メンバーの提出は各自の端末に保存されます。講師側で見るには、メンバーが「進捗を送る」で出したファイルを右上の<b>「データ取込」</b>から読み込んでください。<br>
+      （本番では、提出が自動でこの画面に集まる仕組み＝サーバー連携を次の段階で追加します）
+    </p>
+  </div>
 
   <!-- KPI -->
   <div class="hero">
