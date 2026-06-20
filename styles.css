@@ -332,6 +332,27 @@ textarea.input{ min-height:96px; resize:vertical; }
 .dex:not(.on) .dex-ic{ filter:grayscale(1) opacity(.35); }
 .dex-nm{ font-size:10px; color:var(--ink-2); margin-top:4px; font-weight:700; }
 
+/* ---------- もりくみからの一言（吹き出し＋透過写真） ---------- */
+.mk-card{ position:relative; display:flex; align-items:flex-end; gap:6px;
+  background:linear-gradient(160deg,#FFF3EA,#FFFDF9); border:1px solid var(--rose);
+  border-radius:var(--radius); padding:14px 16px 0; box-shadow:var(--shadow-sm);
+  margin:14px 0; overflow:hidden; min-height:150px; }
+.mk-card::after{ content:""; position:absolute; right:-30px; top:-30px; width:130px;height:130px;
+  background:radial-gradient(circle at 30% 30%, var(--rose), transparent 70%); opacity:.5; }
+.mk-photo{ flex:0 0 auto; align-self:flex-end; z-index:1; }
+.mk-photo img{ height:158px; width:auto; display:block;
+  filter:drop-shadow(0 5px 7px rgba(120,80,60,.20)); }
+.mk-photo .k-ava.mono{ margin-bottom:10px; }
+.mk-right{ flex:1; align-self:center; padding:6px 0 16px; min-width:0; z-index:1; }
+.mk-name{ font-size:12px; font-weight:700; color:var(--terra); margin-bottom:7px; }
+.mk-name small{ color:var(--ink-2); font-weight:600; margin-left:6px; }
+.mk-bubble{ position:relative; background:#fff; border:1.5px solid var(--rose);
+  border-radius:16px; padding:13px 15px; font-size:15px; line-height:1.7; color:var(--ink);
+  box-shadow:var(--shadow-sm); }
+.mk-bubble::before{ content:""; position:absolute; left:-9px; top:22px; width:14px; height:14px;
+  background:#fff; border-left:1.5px solid var(--rose); border-bottom:1.5px solid var(--rose);
+  transform:rotate(45deg); }
+
 /* ---------- ボイス再生 ---------- */
 .voice-btn{ display:inline-flex; align-items:center; gap:7px; margin-top:10px;
   background:#fff; color:var(--terra); border:1.5px solid var(--terra-soft); border-radius:999px;
@@ -345,4 +366,6 @@ textarea.input{ min-height:96px; resize:vertical; }
   .stamps{ grid-template-columns:repeat(6,1fr); }
   .g-house{ width:120px; height:120px; }
   .g-scene{ height:210px; }
+  .mk-photo img{ height:124px; }
+  .mk-card{ min-height:124px; }
 }
