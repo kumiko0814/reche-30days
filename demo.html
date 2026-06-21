@@ -101,6 +101,21 @@
   #demo-bar .demo-reset{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.55);
     color:#fff;border-radius:999px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit}
   #demo-bar .demo-reset:hover{background:rgba(255,255,255,.3)}
+
+  #demo-stepper{position:sticky;top:38px;z-index:79;display:flex;align-items:center;gap:12px;
+    justify-content:center;background:#FBF5EC;border-bottom:1px solid #ecdfce;
+    padding:10px 14px;box-shadow:0 4px 10px rgba(194,91,63,.06)}
+  #demo-stepper .ds-btn{background:#fff;border:1.5px solid #C25B3F;color:#C25B3F;font-weight:700;
+    border-radius:999px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap}
+  #demo-stepper .ds-btn:hover{background:#C25B3F;color:#fff}
+  #demo-stepper .ds-next{background:#C25B3F;color:#fff}
+  #demo-stepper .ds-next:hover{background:#a84a31}
+  #demo-stepper .ds-center{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:140px}
+  #demo-stepper .ds-day{font-size:14px;color:#2E7D6B;font-weight:700}
+  #demo-stepper .ds-day b{font-size:20px;color:#C25B3F}
+  #demo-stepper .ds-day span{font-size:12px;color:#9b7f6f;font-weight:600}
+  #demo-stepper #ds-range{width:150px;accent-color:#C25B3F}
+
   body.dim .dim-overlay,body.dim .dim-note{display:none!important;opacity:0!important}
 </style>
 </head>
@@ -109,8 +124,18 @@
 <!-- ===================== DEMO BAR ===================== -->
 <div id="demo-bar">
   <span class="demo-pill">DEMO</span>
-  <span class="demo-text">これは見本です。生徒さんにはこんな画面が付与されます☺</span>
-  <button class="demo-reset" onclick="demoReset()">最初から見る</button>
+  <span class="demo-text">見本です。下の「次の日へ」で画面の推移を体験できます☺</span>
+  <button class="demo-reset" onclick="demoApply(1)">最初から</button>
+</div>
+
+<!-- ===================== ひめくりステッパー ===================== -->
+<div id="demo-stepper">
+  <button class="ds-btn" onclick="demoStep(-1)">‹ 前の日</button>
+  <div class="ds-center">
+    <div class="ds-day">DAY <b id="ds-num">1</b> <span>/ 30</span></div>
+    <input id="ds-range" type="range" min="1" max="30" value="1" oninput="demoApply(+this.value)">
+  </div>
+  <button class="ds-btn ds-next" onclick="demoStep(1)">次の日 ›</button>
 </div>
 
 <!-- ===================== ONBOARDING ===================== -->
@@ -950,42 +975,100 @@ window.openDay = function(day) {
   });
 };
 </script>
-<!-- ===================== DEMO BOOTSTRAP ===================== -->
+<!-- ===================== DEMO BOOTSTRAP（ひめくりシミュレーター） ===================== -->
 <script>
-function demoSeed(){
+window.DEMO_DAY = 1;
+
+// 任意日のサンプル提出メモ
+var DEMO_SAMPLES={
+  1:"出産前後の隙間時間で、まずは月3万円を目標にやってみます！",
+  3:"繰上げ返済を早めて、その先の投資フェーズに進みたいです。月10万が目標。",
+  7:"https://jp.mercari.com/user/profile/000000000"
+};
+
+// DAY n を「今日」として、その日までの状態をseed
+function demoSeed(n){
   var prog={};
-  var done=14;
-  var samples={
-    1:"出産前後の隙間時間で、まずは月3万円を目標にやってみます！",
-    3:"繰上げ返済を早めて、その先の投資フェーズに進みたいです。月10万が目標。",
-    7:"https://jp.mercari.com/user/profile/000000000"
-  };
-  for(var d=1; d<=done; d++){
-    var def = RECHE_CURRICULUM.find(function(x){return x.day===d;}) || {};
+  for(var d=1; d<=n; d++){
+    var def=RECHE_CURRICULUM.find(function(x){return x.day===d;})||{};
     var p={ done:true, doneAt:new Date().toISOString() };
-    if(samples[d]) p.value=samples[d];
+    if(DEMO_SAMPLES[d]) p.value=DEMO_SAMPLES[d];
     else if(def.type==='report') p.report="今日の学びを書きました。明日からの出品に活かします。";
     else if(def.type==='quiz' && def.quiz){ p.quiz={ score:(def.quiz.length||1), total:(def.quiz.length||1) }; }
     else p.value="提出しました！";
     prog[d]=p;
   }
-  var startISO=(function(){ var t=new Date(); t.setDate(t.getDate()-(done-1)); return t.toISOString().slice(0,10); })();
+  var startISO=(function(){ var t=new Date(); t.setDate(t.getDate()-(n-1)); return t.toISOString().slice(0,10); })();
   var state={ nick:"デモ みさき", startDate:startISO, mode:"free", progress:prog, createdAt:new Date().toISOString() };
   RECHE.saveState(state);
 }
-function demoReset(){
+
+// ひめくり：DAY n の画面に切り替える
+function demoApply(n){
+  n=Math.max(1,Math.min(30,n|0));
+  DEMO_DAY=n;
   localStorage.removeItem("reche30_state");
   localStorage.removeItem("reche30_roster");
-  demoSeed();
+  demoSeed(n);
+  // 同期ランキング用に他メンバーも軽く投入（自分との比較が見える）
+  demoSeedRoster(n);
+  var num=document.getElementById("ds-num"); if(num) num.textContent=n;
+  var rng=document.getElementById("ds-range"); if(rng) rng.value=n;
   if(typeof renderAll==='function') renderAll();
-  RECHE.toast("最初から表示し直しました");
+  window.scrollTo({top:0,behavior:'smooth'});
 }
+function demoStep(d){ demoApply(DEMO_DAY+d); }
+
+// 他メンバー（他人の投稿）— 自分の進捗に応じて前後する数名
+function demoSeedRoster(n){
+  var names=[["はな",n+3],["さくら",Math.max(1,n-2)],["あおい",Math.max(1,n-5)],["みお",Math.max(1,Math.floor(n/2))]];
+  var R={};
+  names.forEach(function(pair){
+    var nm=pair[0], dd=Math.min(30,pair[1]); var prog={};
+    for(var d=1; d<=dd; d++) prog[d]={done:true,doneAt:new Date().toISOString(),value:"提出"};
+    var fake={nick:nm,startDate:"2026-03-09",mode:"free",progress:prog};
+    R[nm]={nick:nm,startDate:"2026-03-09",mode:"free",progress:prog,
+      points:RECHE.totalPoints(fake),done:RECHE.doneCount(fake),streak:RECHE.streak(fake),
+      level:RECHE.level(RECHE.totalPoints(fake)).name,lv:RECHE.level(RECHE.totalPoints(fake)).lv,
+      updatedAt:new Date().toISOString()};
+  });
+  // 自分も載せる（renderAllのpublishでも入るが先に置く）
+  localStorage.setItem("reche30_roster", JSON.stringify(R));
+}
+
+// もりくみ写真＆一言：DEMO_DAY基準で日替わり（カレンダーではなく操作で切替）
+window.MORIKUMI_TODAY=function(){
+  var i=DEMO_DAY-1;
+  var ph=MORIKUMI.photos.length?MORIKUMI.photos[i%MORIKUMI.photos.length]:(MORIKUMI.fallback.photo||"");
+  var tx=MORIKUMI.lines.length?MORIKUMI.lines[i%MORIKUMI.lines.length]:(MORIKUMI.fallback.text||"");
+  return { date:RECHE.todayISO(), text:tx, photo:ph };
+};
+// 今日のボイス＆ミッションは DEMO_DAY
+window.targetDay=function(){ return DEMO_DAY; };
+window.renderToday=function(s){
+  var sec=document.getElementById("today-section"); if(!sec) return;
+  if(!s){ sec.innerHTML=""; return; }
+  var def=RECHE.dayDef(DEMO_DAY)||{};
+  sec.innerHTML=
+    '<div class="mission-banner"><div class="mb-icon">'+
+      '<svg width="26" height="26" viewBox="0 0 24 24" fill="none">'+
+      '<circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/>'+
+      '<path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+    '</div><div class="mb-body">'+
+      '<div class="mb-label">TODAY&apos;S MISSION &nbsp;DAY '+DEMO_DAY+'</div>'+
+      '<div class="mb-title">'+RECHE.esc(def.title||"")+'</div>'+
+      '<button class="btn btn-pri btn-sm" onclick="openDay('+DEMO_DAY+')">今日のミッションを開く</button>'+
+    '</div></div>';
+};
+
+// 暗転はデモでは無効
+window.renderDim=function(){ document.body.classList.remove("dim"); };
+
+// 起動
 (function(){
-  if(!RECHE.hasAccount()) demoSeed();
-  window.renderDim = function(){ document.body.classList.remove("dim"); };
   var ob=document.getElementById("onboarding"); if(ob) ob.style.display="none";
   var app=document.getElementById("app"); if(app) app.style.display="block";
-  if(typeof renderAll==='function') renderAll();
+  demoApply(1);
 })();
 </script>
 </body>
