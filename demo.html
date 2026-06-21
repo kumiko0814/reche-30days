@@ -376,14 +376,20 @@ function renderMorikumi(s) {
   const photo = m.photo
     ? `<img src="${m.photo}" alt="森川くみこ" onerror="this.onerror=null;this.outerHTML=monoAvatar('森',96)">`
     : monoAvatar("森", 96);
+  const vday = targetDay(s);   // 今日のミッション（毎朝のボイス）
   sec.innerHTML = `
     <div class="mk-card">
       <div class="mk-photo">${photo}</div>
       <div class="mk-right">
         <div class="mk-name">${RECHE.esc(MORIKUMI.label)}<small>${RECHE.esc(MORIKUMI.name)}</small></div>
         <div class="mk-bubble">${RECHE.esc(m.text)}</div>
+        <div class="mk-voice">
+          <div class="mk-voice-cap">今日の音声メッセージ（DAY ${vday}）</div>
+          <div id="morning-voice"></div>
+        </div>
       </div>
     </div>`;
+  mountVoice("morning-voice", vday);
 }
 
 // ---------- わたしのお庭（育成） ----------
@@ -948,7 +954,7 @@ window.openDay = function(day) {
 <script>
 function demoSeed(){
   var prog={};
-  var done=14;                        // 14日提出済み（庭・動物・バッジ・連続が賑わう状態）
+  var done=14;
   var samples={
     1:"出産前後の隙間時間で、まずは月3万円を目標にやってみます！",
     3:"繰上げ返済を早めて、その先の投資フェーズに進みたいです。月10万が目標。",
@@ -976,7 +982,6 @@ function demoReset(){
 }
 (function(){
   if(!RECHE.hasAccount()) demoSeed();
-  // デモでは「2日未提出で暗転」は無効（見せる時に真っ黒にしない）
   window.renderDim = function(){ document.body.classList.remove("dim"); };
   var ob=document.getElementById("onboarding"); if(ob) ob.style.display="none";
   var app=document.getElementById("app"); if(app) app.style.display="block";

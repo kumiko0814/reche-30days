@@ -332,6 +332,10 @@ textarea.input{ min-height:96px; resize:vertical; }
 .dex:not(.on) .dex-ic{ filter:grayscale(1) opacity(.35); }
 .dex-nm{ font-size:10px; color:var(--ink-2); margin-top:4px; font-weight:700; }
 
+/* ---------- もりくみカード内の「今日の音声メッセージ」 ---------- */
+.mk-voice{ margin-top:10px; }
+.mk-voice-cap{ font-size:11.5px; color:#9b7f6f; margin-bottom:5px; letter-spacing:.02em; }
+
 /* ---------- 2日以上未提出で画面を暗く（やさしいリマインド） ---------- */
 .dim-overlay{ position:fixed; inset:0; background:rgba(16,11,8,.66); z-index:55;
   pointer-events:none; opacity:0; transition:opacity .8s ease; }
