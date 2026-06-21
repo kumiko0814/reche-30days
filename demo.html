@@ -101,7 +101,6 @@
   #demo-bar .demo-reset{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.55);
     color:#fff;border-radius:999px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit}
   #demo-bar .demo-reset:hover{background:rgba(255,255,255,.3)}
-
   #demo-stepper{position:sticky;top:38px;z-index:79;display:flex;align-items:center;gap:12px;
     justify-content:center;background:#FBF5EC;border-bottom:1px solid #ecdfce;
     padding:10px 14px;box-shadow:0 4px 10px rgba(194,91,63,.06)}
@@ -115,7 +114,6 @@
   #demo-stepper .ds-day b{font-size:20px;color:#C25B3F}
   #demo-stepper .ds-day span{font-size:12px;color:#9b7f6f;font-weight:600}
   #demo-stepper #ds-range{width:150px;accent-color:#C25B3F}
-
   body.dim .dim-overlay,body.dim .dim-note{display:none!important;opacity:0!important}
 </style>
 </head>
@@ -402,6 +400,7 @@ function renderMorikumi(s) {
     ? `<img src="${m.photo}" alt="森川くみこ" onerror="this.onerror=null;this.outerHTML=monoAvatar('森',96)">`
     : monoAvatar("森", 96);
   const vday = targetDay(s);   // 今日のミッション（毎朝のボイス）
+  const vdef = RECHE.dayDef(vday) || {};
   sec.innerHTML = `
     <div class="mk-card">
       <div class="mk-photo">${photo}</div>
@@ -409,7 +408,8 @@ function renderMorikumi(s) {
         <div class="mk-name">${RECHE.esc(MORIKUMI.label)}<small>${RECHE.esc(MORIKUMI.name)}</small></div>
         <div class="mk-bubble">${RECHE.esc(m.text)}</div>
         <div class="mk-voice">
-          <div class="mk-voice-cap">今日の音声メッセージ（DAY ${vday}）</div>
+          <div class="mk-voice-cap">今日の音声メッセージ ｜ DAY ${vday}</div>
+          <div class="mk-voice-title">${RECHE.esc(vdef.voice || "")}</div>
           <div id="morning-voice"></div>
         </div>
       </div>
@@ -978,15 +978,11 @@ window.openDay = function(day) {
 <!-- ===================== DEMO BOOTSTRAP（ひめくりシミュレーター） ===================== -->
 <script>
 window.DEMO_DAY = 1;
-
-// 任意日のサンプル提出メモ
 var DEMO_SAMPLES={
   1:"出産前後の隙間時間で、まずは月3万円を目標にやってみます！",
   3:"繰上げ返済を早めて、その先の投資フェーズに進みたいです。月10万が目標。",
   7:"https://jp.mercari.com/user/profile/000000000"
 };
-
-// DAY n を「今日」として、その日までの状態をseed
 function demoSeed(n){
   var prog={};
   for(var d=1; d<=n; d++){
@@ -1002,15 +998,12 @@ function demoSeed(n){
   var state={ nick:"デモ みさき", startDate:startISO, mode:"free", progress:prog, createdAt:new Date().toISOString() };
   RECHE.saveState(state);
 }
-
-// ひめくり：DAY n の画面に切り替える
 function demoApply(n){
   n=Math.max(1,Math.min(30,n|0));
   DEMO_DAY=n;
   localStorage.removeItem("reche30_state");
   localStorage.removeItem("reche30_roster");
   demoSeed(n);
-  // 同期ランキング用に他メンバーも軽く投入（自分との比較が見える）
   demoSeedRoster(n);
   var num=document.getElementById("ds-num"); if(num) num.textContent=n;
   var rng=document.getElementById("ds-range"); if(rng) rng.value=n;
@@ -1018,8 +1011,6 @@ function demoApply(n){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function demoStep(d){ demoApply(DEMO_DAY+d); }
-
-// 他メンバー（他人の投稿）— 自分の進捗に応じて前後する数名
 function demoSeedRoster(n){
   var names=[["はな",n+3],["さくら",Math.max(1,n-2)],["あおい",Math.max(1,n-5)],["みお",Math.max(1,Math.floor(n/2))]];
   var R={};
@@ -1032,18 +1023,14 @@ function demoSeedRoster(n){
       level:RECHE.level(RECHE.totalPoints(fake)).name,lv:RECHE.level(RECHE.totalPoints(fake)).lv,
       updatedAt:new Date().toISOString()};
   });
-  // 自分も載せる（renderAllのpublishでも入るが先に置く）
   localStorage.setItem("reche30_roster", JSON.stringify(R));
 }
-
-// もりくみ写真＆一言：DEMO_DAY基準で日替わり（カレンダーではなく操作で切替）
 window.MORIKUMI_TODAY=function(){
   var i=DEMO_DAY-1;
   var ph=MORIKUMI.photos.length?MORIKUMI.photos[i%MORIKUMI.photos.length]:(MORIKUMI.fallback.photo||"");
   var tx=MORIKUMI.lines.length?MORIKUMI.lines[i%MORIKUMI.lines.length]:(MORIKUMI.fallback.text||"");
   return { date:RECHE.todayISO(), text:tx, photo:ph };
 };
-// 今日のボイス＆ミッションは DEMO_DAY
 window.targetDay=function(){ return DEMO_DAY; };
 window.renderToday=function(s){
   var sec=document.getElementById("today-section"); if(!sec) return;
@@ -1060,11 +1047,7 @@ window.renderToday=function(s){
       '<button class="btn btn-pri btn-sm" onclick="openDay('+DEMO_DAY+')">今日のミッションを開く</button>'+
     '</div></div>';
 };
-
-// 暗転はデモでは無効
 window.renderDim=function(){ document.body.classList.remove("dim"); };
-
-// 起動
 (function(){
   var ob=document.getElementById("onboarding"); if(ob) ob.style.display="none";
   var app=document.getElementById("app"); if(app) app.style.display="block";

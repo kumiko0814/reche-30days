@@ -53,20 +53,19 @@ window.MORIKUMI = {
     "私たちはいつでもここにいます。ひとりじゃありませんよ。"
   ],
 
-  photos: [
-    "assets/morikumi/p1.png",
-    "assets/morikumi/p2.png",
-    "assets/morikumi/p3.png",
-    "assets/morikumi/p4.png",
-    "assets/morikumi/p5.png",
-    "assets/morikumi/p6.png"
-  ],
+  // 【ルール】30日間、毎日ちがう写真にする（使い回し禁止）。
+  // day01.png〜day30.png をDAY番号と1対1で表示する。
+  photos: (function () {
+    var a = [];
+    for (var d = 1; d <= 30; d++) a.push("assets/morikumi/day" + ("0" + d).slice(-2) + ".png");
+    return a;
+  })(),
 
   daily: {},   // 特定日に固定したい時だけ { "YYYY-MM-DD": {text, photo} }
 
   fallback: {
     text:  "おはようございます☺ 今日もあなたのペースで、一歩ずついきましょうね。",
-    photo: "assets/morikumi/p1.png"
+    photo: "assets/morikumi/day01.png"
   }
 };
 

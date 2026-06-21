@@ -346,6 +346,7 @@ function renderMorikumi(s) {
     ? `<img src="${m.photo}" alt="森川くみこ" onerror="this.onerror=null;this.outerHTML=monoAvatar('森',96)">`
     : monoAvatar("森", 96);
   const vday = targetDay(s);   // 今日のミッション（毎朝のボイス）
+  const vdef = RECHE.dayDef(vday) || {};
   sec.innerHTML = `
     <div class="mk-card">
       <div class="mk-photo">${photo}</div>
@@ -353,7 +354,8 @@ function renderMorikumi(s) {
         <div class="mk-name">${RECHE.esc(MORIKUMI.label)}<small>${RECHE.esc(MORIKUMI.name)}</small></div>
         <div class="mk-bubble">${RECHE.esc(m.text)}</div>
         <div class="mk-voice">
-          <div class="mk-voice-cap">今日の音声メッセージ（DAY ${vday}）</div>
+          <div class="mk-voice-cap">今日の音声メッセージ ｜ DAY ${vday}</div>
+          <div class="mk-voice-title">${RECHE.esc(vdef.voice || "")}</div>
           <div id="morning-voice"></div>
         </div>
       </div>

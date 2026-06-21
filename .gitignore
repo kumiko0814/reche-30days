@@ -1,2 +1,5 @@
 .DS_Store
 _qa*.html
+_*.py
+_*.sh
+originals/
