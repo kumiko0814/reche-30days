@@ -1139,7 +1139,7 @@ window.renderToday = function(s){
   var sec=document.getElementById("today-section"); if(!sec) return;
   if(!s){sec.innerHTML="";return;}
   var d=0; for(var i=1;i<=TRIAL_MAX;i++){ if(!(s.progress[i]&&s.progress[i].done)){d=i;break;} }
-  if(!d){ sec.innerHTML='<div class="mission-done-note">体験版の4日間、おつかれさまでした☺<br>続きは Re:che にご縁があったら受講できます✨</div>'; return; }
+  if(!d){ sec.innerHTML='<div class="mission-done-note">体験版の4日間、おつかれさまでした☺<br>続きは Re:che にご縁があったら受講できます✨<br><button class="btn btn-pri btn-sm" style="margin-top:10px" onclick="showSampleCert()">卒業証書（サンプル）を見る</button></div>'; return; }
   var def=RECHE.dayDef(d)||{};
   sec.innerHTML='<div class="mission-banner"><div class="mb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="mb-body"><div class="mb-label">TODAY&apos;S MISSION &nbsp;DAY '+d+'</div><div class="mb-title">'+RECHE.esc(def.title||"")+'</div><button class="btn btn-pri btn-sm" onclick="openDay('+d+')">今日のミッションを開く</button></div></div>';
 };
@@ -1156,6 +1156,23 @@ function trialDecorate(){
 }
 var _origRenderAll = renderAll;
 window.renderAll = function(){ _origRenderAll(); trialDecorate(); };
+// 体験版の卒業証書（サンプル）：本番でもらえる証書の見本を表示
+function showSampleCert(){
+  document.getElementById("cert-inner").innerHTML =
+    '<div class="cert" style="padding:20px 18px 18px"><div class="cert-frame"></div>'+
+    '<div style="text-align:center;position:relative;z-index:3">'+
+    '<div class="cert-kicker">SAMPLE</div>'+
+    '<div class="cert-title" style="font-size:24px;margin:2px 0 8px">卒業証書（見本）</div>'+
+    '<img src="assets/cert-sample.png" alt="卒業証書サンプル" style="width:100%;border-radius:10px;border:1px solid #eee;box-shadow:0 8px 20px rgba(0,0,0,.14)">'+
+    '<p style="font-size:12.5px;color:#5a4c42;line-height:1.9;margin-top:12px">これは見本です。<br>30日間やり遂げると、<b style="color:#C25B3F">あなたのお名前と歩み</b>で綴られた“あなただけの卒業証書”が贈られます✨</p>'+
+    '</div></div>';
+  document.getElementById("cert-back").classList.add("open");
+  document.body.style.overflow="hidden";
+  var cf=document.getElementById("cert-confetti");
+  var cols=["#C25B3F","#2E7D6B","#D9A441","#E8A293","#9ECBBA"]; var html="";
+  for(var i=0;i<60;i++){ html+='<span class="ccf" style="left:'+(Math.random()*100)+'%;animation-delay:'+(Math.random()*2.2).toFixed(2)+'s;animation-duration:'+(2.6+Math.random()*2).toFixed(2)+'s;background:'+cols[i%cols.length]+';transform:rotate('+(Math.random()*360)+'deg)"></span>'; }
+  cf.innerHTML=html;
+}
 
 var _realShowApp = showApp;
 window.showApp = function(){
