@@ -1188,14 +1188,14 @@ function introStart(){
   document.getElementById("intro-screen").style.display="none";
   _realShowApp();
 }
-(function(){
+function _trialAuto(){
   var free=document.querySelector("input[name=ob-mode][value=free]"); if(free) free.checked=true;
-  if(RECHE.hasAccount()){
-    var ob=document.getElementById("onboarding"); if(ob) ob.style.display="none";
-    document.getElementById("app").style.display="block";
-  }
-  renderAll();
-})();
+  // リピート訪問（名前登録済み）でも、必ず説明画面を通す
+  if(RECHE.hasAccount()){ showApp(); }
+  else { renderAll(); }
+}
+if(document.readyState!=="loading") _trialAuto();
+else document.addEventListener("DOMContentLoaded", _trialAuto);
 </script>
 
 <!-- ===================== スタート説明画面 ===================== -->

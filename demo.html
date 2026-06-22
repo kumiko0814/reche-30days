@@ -1193,16 +1193,13 @@ function introStart(){
   demoApply(1);
 }
 // 進め方選択を隠してfree固定（オンボーディングはそのまま使う）
-(function(){
+function _demoAuto(){
   var free=document.querySelector("input[name=ob-mode][value=free]"); if(free) free.checked=true;
-  // 既にアカウントがあれば説明を出さず直接アプリ＋ステッパー
-  if(RECHE.hasAccount()){
-    var ob=document.getElementById("onboarding"); if(ob) ob.style.display="none";
-    document.getElementById("app").style.display="block";
-    var stp=document.getElementById("demo-stepper"); if(stp) stp.style.display="flex";
-    demoApply(1);
-  }
-})();
+  // リピート訪問（名前登録済み）でも、必ず説明画面を通す
+  if(RECHE.hasAccount()){ showApp(); }
+}
+if(document.readyState!=="loading") _demoAuto();
+else document.addEventListener("DOMContentLoaded", _demoAuto);
 </script>
 
 <!-- ===================== スタート説明画面 ===================== -->
