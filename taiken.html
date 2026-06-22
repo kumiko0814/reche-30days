@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Re:che 30DAYS プログラム</title>
+  <title>Re:che 30DAYS（体験版）</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
@@ -91,8 +91,37 @@
     /* ---- app shell hidden by default ---- */
     #app{ display:none; }
   </style>
+<style>
+  #trial-bar{position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:10px;
+    flex-wrap:wrap;justify-content:center;background:linear-gradient(90deg,#2E7D6B,#C25B3F);
+    color:#fff;padding:10px 14px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+  #trial-bar .trial-pill{background:#fff;color:#C25B3F;font-weight:700;border-radius:999px;
+    padding:2px 12px;letter-spacing:.06em;font-size:11px}
+  /* 5日目以降のカードをぼかしてロック */
+  .daycard.trial-blur{position:relative;cursor:pointer}
+  .daycard.trial-blur > *{filter:blur(4.5px);opacity:.65}
+  .daycard.trial-blur .trial-ov{filter:none;opacity:1}
+  .trial-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:4px;color:#9b8576;background:rgba(251,245,236,.35);border-radius:inherit}
+  .trial-ov .tl-txt{font-size:10.5px;font-weight:700;color:#C25B3F;text-align:center;line-height:1.4}
+  /* ロック画面（モーダル） */
+  .trial-lock{text-align:center;padding:14px 6px 6px}
+  .trial-lock .tl-ic{margin:0 auto 12px;width:64px;height:64px;border-radius:50%;
+    background:#FBF5EC;display:flex;align-items:center;justify-content:center}
+  .trial-lock h3{font-size:18px;color:#2E7D6B;margin:0 0 10px}
+  .trial-lock .tl-main{font-size:16px;font-weight:700;color:#C25B3F;line-height:1.7;margin:0 0 12px}
+  .trial-lock .tl-sub{font-size:13px;color:#7a6a5e;line-height:1.8;margin:0}
+  /* 体験版は進め方選択を隠してfree固定 */
+  .field:has(.mode-select){display:none}
+</style>
 </head>
 <body>
+
+<!-- ===================== TRIAL BAR ===================== -->
+<div id="trial-bar">
+  <span class="trial-pill">体験版</span>
+  <span class="trial-text">最初の4日間だけ、無料でおためしできます☺</span>
+</div>
 
 <!-- ===================== ONBOARDING ===================== -->
 <div id="onboarding">
@@ -220,6 +249,18 @@
 <script src="curriculum.js"></script>
 <script src="kumiko-messages.js"></script>
 <script src="morikumi.js"></script>
+<!-- TRIAL: localStorage を専用namespaceに隔離 -->
+<script>
+(function(){
+  var g=localStorage.getItem.bind(localStorage),
+      s=localStorage.setItem.bind(localStorage),
+      r=localStorage.removeItem.bind(localStorage);
+  var NS=function(k){return (typeof k==='string'&&k.indexOf('reche30_')===0)?('trialNS_'+k):k;};
+  localStorage.getItem=function(k){return g(NS(k));};
+  localStorage.setItem=function(k,v){return s(NS(k),v);};
+  localStorage.removeItem=function(k){return r(NS(k));};
+})();
+</script>
 <script src="app-core.js"></script>
 <script src="garden.js"></script>
 <script>
@@ -959,6 +1000,90 @@ window.openDay = function(day) {
     if (def.type === "report") updateReport();
   });
 };
+</script>
+<!-- ===================== TRIAL BOOTSTRAP ===================== -->
+<script>
+window.TRIAL_MAX = 4;
+
+function showTrialLock(){
+  var lockSvg='<svg width="30" height="30" viewBox="0 0 24 24" fill="none">'+
+    '<rect x="4" y="10" width="16" height="11" rx="3" stroke="#C25B3F" stroke-width="1.6"/>'+
+    '<path d="M8 10V7a4 4 0 018 0v3" stroke="#C25B3F" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  document.getElementById("modal-inner").innerHTML=
+    '<button class="close-x" onclick="closeModal()" aria-label="閉じる">&times;</button>'+
+    '<div class="trial-lock">'+
+      '<div class="tl-ic">'+lockSvg+'</div>'+
+      '<h3>ここから先は…</h3>'+
+      '<p class="tl-main">ここからは Re:che にご縁があったら<br>受講できます✨</p>'+
+      '<p class="tl-sub">5日目以降の全カリキュラム・毎日届くくみこのボイス・お庭の続きが、すべて解放されます。<br>続きを楽しみにしていてくださいね☺</p>'+
+    '</div>';
+  document.getElementById("modal-back").classList.add("open");
+  document.body.style.overflow="hidden";
+}
+
+// 4日目までだけ開ける。5日目以降はロック画面
+var _origOpenDay = openDay;
+window.openDay = function(d){ if(d>TRIAL_MAX){ showTrialLock(); return; } _origOpenDay(d); };
+
+// 今日のボイス/写真は1〜4日に限定（5日目以降の内容を出さない）
+window.targetDay = function(){
+  var s=RECHE.getState(); if(!s) return 1;
+  for(var i=1;i<=TRIAL_MAX;i++){ if(!(s.progress[i]&&s.progress[i].done)) return i; }
+  return TRIAL_MAX;
+};
+
+// 今日のミッション＝1〜4の最初の未提出。全部済んだら締めメッセージ
+window.renderToday = function(s){
+  var sec=document.getElementById("today-section"); if(!sec) return;
+  if(!s){ sec.innerHTML=""; return; }
+  var d=0;
+  for(var i=1;i<=TRIAL_MAX;i++){ if(!(s.progress[i]&&s.progress[i].done)){ d=i; break; } }
+  if(!d){
+    sec.innerHTML='<div class="mission-done-note">体験版の4日間、おつかれさまでした☺<br>続きは Re:che にご縁があったら受講できます✨</div>';
+    return;
+  }
+  var def=RECHE.dayDef(d)||{};
+  sec.innerHTML=
+    '<div class="mission-banner"><div class="mb-icon">'+
+      '<svg width="26" height="26" viewBox="0 0 24 24" fill="none">'+
+      '<circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/>'+
+      '<path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+    '</div><div class="mb-body">'+
+      '<div class="mb-label">TODAY&apos;S MISSION &nbsp;DAY '+d+'</div>'+
+      '<div class="mb-title">'+RECHE.esc(def.title||"")+'</div>'+
+      '<button class="btn btn-pri btn-sm" onclick="openDay('+d+')">今日のミッションを開く</button>'+
+    '</div></div>';
+};
+
+// 5日目以降のカードをぼかしてロック表示
+function trialDecorate(){
+  var cards=document.querySelectorAll("#days-grid .daycard");
+  cards.forEach(function(c,i){
+    if(i>=TRIAL_MAX && !c.querySelector(".trial-ov")){
+      c.classList.add("trial-blur");
+      var ov=document.createElement("div"); ov.className="trial-ov";
+      ov.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none">'+
+        '<rect x="4" y="10" width="16" height="11" rx="3" stroke="#C25B3F" stroke-width="1.6"/>'+
+        '<path d="M8 10V7a4 4 0 018 0v3" stroke="#C25B3F" stroke-width="1.6" stroke-linecap="round"/></svg>'+
+        '<span class="tl-txt">ご縁があったら<br>解放</span>';
+      c.appendChild(ov);
+    }
+  });
+}
+var _origRenderAll = renderAll;
+window.renderAll = function(){ _origRenderAll(); trialDecorate(); };
+
+// 起動：オンボーディングは出す（名前を入れて体験開始）。modeはfree固定。
+(function(){
+  // mode選択は隠してfree固定
+  var modeRow=document.querySelector("input[name=ob-mode][value=free]");
+  if(modeRow) modeRow.checked=true;
+  if(RECHE.hasAccount()){
+    var ob=document.getElementById("onboarding"); if(ob) ob.style.display="none";
+    var app=document.getElementById("app"); if(app) app.style.display="block";
+  }
+  renderAll();
+})();
 </script>
 </body>
 </html>

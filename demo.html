@@ -370,7 +370,7 @@ function renderDim(s) {
   const gap  = daysSinceLastSubmit(s);
   if (s && gap >= 2) {
     document.body.classList.add("dim");
-    note.innerHTML = `<b>${gap}日</b>、お休みしていましたね。<br>今日のミッションを1つ出すと、お庭にも光が戻りますよ☺`;
+    note.innerHTML = `<b>${gap}日</b>、お休みしていましたね。<br>お庭の動物や草木も元気をなくしています…。今日のミッションを1つ提出すると、画面に光が戻り、動物や草木もまた元気になりますよ☺`;
   } else {
     document.body.classList.remove("dim");
     note.innerHTML = "";
@@ -421,7 +421,8 @@ function renderMorikumi(s) {
 function renderGarden(s) {
   const sec = document.getElementById("garden-section");
   if (!s) { sec.innerHTML = ""; return; }
-  sec.innerHTML = GARDEN.render(s);
+  const wither = !!s && RECHE.doneCount(s) > 0 && daysSinceLastSubmit(s) >= 2;
+  sec.innerHTML = GARDEN.render(s, wither);
 }
 
 // ---------- ボイス再生（あれば自動表示） ----------
@@ -716,6 +717,10 @@ function openDay(day) {
       <button class="btn btn-ghost" onclick="gradeQuiz()">答え合わせ</button>
       <button class="btn btn-pri" id="quiz-submit-btn" onclick="submitDay()" disabled>提出する</button>`;
   }
+  // 提出済みなら「LINEグループにコピペ」ボタンも出す
+  if (isDone) {
+    submitBtn += `<button class="btn btn-line" onclick="copyForLine(${day})">LINEグループにコピペ</button>`;
+  }
 
   document.getElementById("modal-inner").innerHTML = `
     <button class="close-x" onclick="closeModal()" aria-label="閉じる">&times;</button>
@@ -869,6 +874,37 @@ function toggleCheck() {
 
 // ---- submit ----
 
+// ---- LINEグループへコピペ提出 ----
+function lineSubmitText(day) {
+  const s = RECHE.getState(); const def = RECHE.dayDef(day);
+  if (!s || !def) return "";
+  const p = s.progress[day] || {};
+  let body = "";
+  if (def.type === "submit") body = p.value || "";
+  else if (def.type === "action") body = "実施しました（" + (def.checklabel || "") + "）";
+  else if (def.type === "quiz" && p.quiz) body = "クイズ " + p.quiz.score + "／" + p.quiz.total + " 問正解";
+  else if ((def.type === "calc" || def.type === "report") && p.report) {
+    body = Object.keys(p.report).map(k => "・" + k + "：" + p.report[k]).join("\n");
+  } else body = "提出しました";
+  return "【Re:che 30DAYS】DAY" + day + "「" + def.voice + "」提出\n"
+       + "－－－－－\n" + body + "\n－－－－－\n#" + (s.nick || "");
+}
+function copyForLine(day, silent) {
+  const txt = lineSubmitText(day);
+  if (!txt) { RECHE.toast("提出内容が見つかりません"); return; }
+  const ok = () => { if (!silent) RECHE.toast("コピーしました！LINEグループに貼り付けて送ってね☺"); };
+  const fail = () => {
+    const ta = document.createElement("textarea");
+    ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand("copy"); ok(); } catch (e) { if (!silent) RECHE.toast("コピーできませんでした"); }
+    document.body.removeChild(ta);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(ok, fail);
+  } else { fail(); }
+}
+
 function submitDay() {
   const def = RECHE.dayDef(_currentDay);
   if (!def) return;
@@ -919,6 +955,8 @@ function submitDay() {
   const animalsAfter = GARDEN.unlockedAnimals(RECHE.doneCount(result.state));
   const newAnimal = animalsAfter.find(a => !animalsBefore.includes(a.id));
 
+  const submittedDay = _currentDay;
+  copyForLine(submittedDay, true);   // LINE用テキストを自動でクリップボードへ
   closeModal();
   renderAll();
 
@@ -928,10 +966,11 @@ function submitDay() {
     if (newAnimal) msg += `お庭に「${newAnimal.name}」が来ました  `;
     if (result.newStreakMilestone) msg += `${result.newStreakMilestone}日連続ボーナス達成  `;
     if (result.leveledUp) msg += `称号アップ：${result.newLevel.name}  `;
-    if (result.newBadges.length) msg += `バッジ獲得：${result.newBadges.join("・")}`;
+    if (result.newBadges.length) msg += `バッジ獲得：${result.newBadges.join("・")}  `;
+    msg += "（LINE用にコピー済み）";
     RECHE.toast(msg.trim());
   } else {
-    RECHE.toast("提出しました。おつかれさまです。");
+    RECHE.toast("提出しました。LINEグループ用にコピーもしたので、貼り付けて送ってね☺");
   }
 }
 

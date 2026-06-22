@@ -64,7 +64,7 @@
   function unlockedAnimals(done){ return ANIMALS.filter(a=>done>=a.need); }
   function nextAnimal(done){ return ANIMALS.find(a=>done<a.need) || null; }
 
-  function render(state){
+  function render(state, wither){
     const done = RECHE.doneCount(state);            // 課題提出数で成長
     const stage = Math.min(6, Math.floor(done / 5) + 1); // 5提出ごとにお店ランクUP
     const got  = unlockedAnimals(done);
@@ -93,18 +93,21 @@
         <div class="dex-nm">${on?RECHE.esc(a.name):"？"}</div></div>`;
     }).join("");
 
-    const hint = next
-      ? `あと <b>${next.need-done}日</b> で「<b>${RECHE.esc(next.name)}</b>」がお庭にあそびに来ます`
-      : `すべてのおともだちが集まりました。ありがとう♡`;
+    const hint = wither
+      ? `お庭の動物や草木が、少し元気をなくしています…。<br>今日のミッションを1つ提出すると、また元気になりますよ☺`
+      : (next
+        ? `あと <b>${next.need-done}日</b> で「<b>${RECHE.esc(next.name)}</b>」がお庭にあそびに来ます`
+        : `すべてのおともだちが集まりました。ありがとう♡`);
 
     return `
       <div class="garden">
-        <div class="g-scene">
+        <div class="g-scene${wither ? " withered" : ""}">
           <div class="g-sky"></div>
           <div class="g-ground"></div>
           <div class="g-house">${houseSvg(stage)}</div>
           ${plants}
           ${animals}
+          ${wither ? `<div class="g-wilt">…おやすみ中…</div>` : ""}
           <div class="g-name">${RECHE.esc(state.nick)}のお庭</div>
         </div>
         <div class="g-meta">

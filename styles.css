@@ -337,6 +337,18 @@ textarea.input{ min-height:96px; resize:vertical; }
 .mk-voice-cap{ font-size:11px; color:#a98f7d; letter-spacing:.03em; }
 .mk-voice-title{ font-size:14.5px; font-weight:700; color:#2E7D6B; margin:2px 0 7px; }
 
+/* ---------- お庭が枯れる（2日以上未提出） ---------- */
+.g-scene.withered{ filter:grayscale(.72) brightness(.82) sepia(.18); transition:filter 1s ease; }
+.g-scene.withered .g-plant,
+.g-scene.withered .g-animal{ animation:none !important; opacity:.55; transform:translateY(2px) rotate(-3deg); }
+.g-scene.withered .g-sky{ filter:grayscale(.5) brightness(.85); }
+.g-wilt{ position:absolute; top:8px; left:50%; transform:translateX(-50%); z-index:4;
+  background:rgba(40,30,24,.55); color:#FBF5EC; font-size:11px; padding:3px 12px; border-radius:999px; }
+
+/* ---------- LINEグループへコピペ提出ボタン ---------- */
+.btn-line{ background:#06C755; color:#fff; border:none; }
+.btn-line:hover{ background:#05a948; }
+
 /* ---------- 2日以上未提出で画面を暗く（やさしいリマインド） ---------- */
 .dim-overlay{ position:fixed; inset:0; background:rgba(16,11,8,.66); z-index:55;
   pointer-events:none; opacity:0; transition:opacity .8s ease; }
