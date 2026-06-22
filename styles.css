@@ -337,6 +337,58 @@ textarea.input{ min-height:96px; resize:vertical; }
 .mk-voice-cap{ font-size:11px; color:#a98f7d; letter-spacing:.03em; }
 .mk-voice-title{ font-size:14.5px; font-weight:700; color:#2E7D6B; margin:2px 0 7px; }
 
+/* ---------- 卒業証書 ---------- */
+.cert-back{ position:fixed; inset:0; z-index:120; display:none;
+  background:rgba(30,22,18,.82); overflow-y:auto; padding:26px 14px; }
+.cert-back.open{ display:block; }
+.cert-confetti{ position:fixed; inset:0; pointer-events:none; z-index:121; overflow:hidden; }
+.ccf{ position:absolute; top:-14px; width:8px; height:13px; border-radius:2px; opacity:.9;
+  animation:ccfall linear forwards; }
+@keyframes ccfall{ to{ transform:translateY(105vh) rotate(540deg); opacity:.5; } }
+.cert-scroll{ position:relative; z-index:122; max-width:400px; margin:0 auto;
+  display:flex; flex-direction:column; align-items:center; gap:14px; }
+.cert-close{ background:rgba(255,255,255,.92); }
+
+.cert{ position:relative; width:100%; background:#FBF5EC; border-radius:20px;
+  padding:30px 26px 26px; overflow:hidden; border:1px solid #ecdcc4;
+  box-shadow:0 24px 60px rgba(0,0,0,.45); animation:certIn .9s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes certIn{ from{ opacity:0; transform:translateY(26px) scale(.96); } to{ opacity:1; transform:none; } }
+.cert-frame{ position:absolute; inset:12px; border:2px solid #D9A441; border-radius:12px; pointer-events:none; }
+.cert-frame::after{ content:""; position:absolute; inset:5px; border:1px solid rgba(217,164,65,.45); border-radius:9px; }
+.cert-portrait{ position:absolute; top:18px; right:20px; width:52px; height:52px; border-radius:50%;
+  overflow:hidden; border:2px solid #D9A441; background:#fff; z-index:4; }
+.cert-portrait img{ width:100%; height:100%; object-fit:cover; object-position:top center; }
+.cert-in{ position:relative; z-index:3; text-align:center; }
+.cert-kicker{ font-size:11px; letter-spacing:.38em; color:#2E7D6B; font-weight:700; margin-bottom:6px; }
+.cert-title{ font-family:"Shippori Mincho","游明朝",serif; font-size:34px; font-weight:700;
+  color:#C25B3F; letter-spacing:.16em; margin-bottom:2px; }
+.cert-suben{ font-size:9.5px; letter-spacing:.30em; color:#b89a72; margin-bottom:16px; }
+.cert-ribbon{ display:inline-block; background:#2E7D6B; color:#fff; font-size:11px; letter-spacing:.10em;
+  padding:5px 18px; border-radius:999px; margin-bottom:15px; }
+.cert-toline{ font-size:13px; color:#7a6a5e; margin-bottom:3px; }
+.cert-name{ font-family:"Shippori Mincho","游明朝",serif; font-size:26px; font-weight:700;
+  color:#3a2e26; margin-bottom:4px; }
+.cert-name u{ text-decoration:none; border-bottom:2px solid #D9A441; padding:0 14px 3px; }
+.cert-name small{ font-size:14px; color:#7a6a5e; margin-left:3px; }
+.cert-msg{ font-size:12.5px; line-height:2.0; text-align:left; color:#4a3c32; margin:16px 2px;
+  background:rgba(255,255,255,.55); border-radius:12px; padding:15px; border:1px solid #efe2cf; }
+.cert-stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin:4px 0 16px; }
+.cst{ background:#fff; border:1px solid #eaddc8; border-radius:10px; padding:9px 2px; }
+.cst .n{ font-size:18px; font-weight:700; color:#C25B3F; line-height:1; }
+.cst .l{ font-size:9px; color:#8c7b6c; margin-top:4px; }
+.cert-sign{ display:flex; align-items:center; justify-content:space-between;
+  padding-top:14px; border-top:1px dashed #e3d4bd; }
+.cert-date{ font-size:11px; color:#8c7b6c; text-align:left; line-height:1.6; }
+.cert-by{ display:flex; align-items:center; gap:9px; }
+.cert-who{ text-align:right; }
+.cert-who .role{ font-size:9px; color:#8c7b6c; }
+.cert-who .who{ font-family:"Shippori Mincho","游明朝",serif; font-size:15px; font-weight:700; color:#3a2e26; }
+.cert-seal{ width:46px; height:46px; border-radius:50%; border:2px solid #C25B3F; color:#C25B3F;
+  display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;
+  line-height:1.2; text-align:center; transform:rotate(-9deg); background:rgba(194,91,63,.06); }
+.cert-bloom{ font-size:11px; color:#2E7D6B; margin-top:14px; letter-spacing:.04em; }
+.cert-voice{ margin-top:12px; }
+
 /* ---------- お庭が枯れる（2日以上未提出） ---------- */
 .g-scene.withered{ filter:grayscale(.72) brightness(.82) sepia(.18); transition:filter 1s ease; }
 .g-scene.withered .g-plant,

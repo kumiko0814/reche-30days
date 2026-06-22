@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Re:che 30DAYS プログラム（デモ）</title>
+  <title>Re:che 30DAYS （デモ）</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
     /* ---- onboarding screen ---- */
@@ -92,47 +92,50 @@
     #app{ display:none; }
   </style>
 <style>
-  #demo-bar{position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:10px;
-    flex-wrap:wrap;justify-content:center;background:linear-gradient(90deg,#2E7D6B,#C25B3F);
-    color:#fff;padding:9px 14px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
-  #demo-bar .demo-pill{background:#fff;color:#C25B3F;font-weight:700;border-radius:999px;
-    padding:2px 10px;letter-spacing:.06em;font-size:11px}
-  #demo-bar .demo-text{opacity:.96}
-  #demo-bar .demo-reset{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.55);
-    color:#fff;border-radius:999px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit}
-  #demo-bar .demo-reset:hover{background:rgba(255,255,255,.3)}
-  #demo-stepper{position:sticky;top:38px;z-index:79;display:flex;align-items:center;gap:12px;
-    justify-content:center;background:#FBF5EC;border-bottom:1px solid #ecdfce;
-    padding:10px 14px;box-shadow:0 4px 10px rgba(194,91,63,.06)}
-  #demo-stepper .ds-btn{background:#fff;border:1.5px solid #C25B3F;color:#C25B3F;font-weight:700;
-    border-radius:999px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap}
-  #demo-stepper .ds-btn:hover{background:#C25B3F;color:#fff}
+
+  #intro-screen{position:fixed;inset:0;z-index:90;display:none;background:#FBF5EC;overflow-y:auto;padding:22px 16px;font-family:"Zen Maru Gothic","游ゴシック",sans-serif}
+  .intro-card{max-width:430px;margin:0 auto}
+  .intro-logo{width:52px;height:52px;border-radius:15px;background:#C25B3F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 14px}
+  .intro-h{text-align:center;font-size:20px;color:#2E7D6B;margin-bottom:4px;font-weight:700}
+  .intro-lead{text-align:center;font-size:13px;color:#7a6a5e;margin-bottom:20px;line-height:1.7}
+  .intro-item{display:flex;gap:12px;background:#fff;border:1px solid #eee0cf;border-radius:16px;padding:15px;margin-bottom:13px}
+  .intro-num{flex:0 0 28px;height:28px;border-radius:50%;background:#2E7D6B;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .intro-body h3{font-size:15px;color:#C25B3F;margin-bottom:5px}
+  .intro-body p{font-size:12.5px;line-height:1.85;color:#5a4c42}
+  .intro-cert{width:100%;border-radius:10px;margin-top:10px;box-shadow:0 8px 20px rgba(0,0,0,.14);border:1px solid #eee}
+  .intro-mini{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .im-tile{flex:1;height:50px;border-radius:10px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-size:10px;font-weight:700;color:#fff;position:relative;overflow:hidden}
+  .im-tile.genki{background:linear-gradient(180deg,#bfe3d3,#7FB7A7)}
+  .im-tile.sabori{background:linear-gradient(180deg,#b7b0a8,#8d857c)}
+  .im-tile .dotrow{position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;gap:6px}
+  .im-tile .dotrow span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.85)}
+  .im-tile.sabori .dotrow span{background:rgba(255,255,255,.45)}
+  .im-arrow{color:#b89a72;font-weight:700;font-size:18px}
+  .intro-start{width:100%;margin-top:8px;font-size:16px;padding:14px}
+
+
+  #demo-bar{position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;background:linear-gradient(90deg,#2E7D6B,#C25B3F);color:#fff;padding:9px 14px;font-size:13px}
+  #demo-bar .demo-pill{background:#fff;color:#C25B3F;font-weight:700;border-radius:999px;padding:2px 10px;font-size:11px}
+  #demo-stepper{position:sticky;top:38px;z-index:79;display:flex;align-items:center;gap:12px;justify-content:center;background:#FBF5EC;border-bottom:1px solid #ecdfce;padding:10px 14px}
+  #demo-stepper .ds-btn{background:#fff;border:1.5px solid #C25B3F;color:#C25B3F;font-weight:700;border-radius:999px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap}
   #demo-stepper .ds-next{background:#C25B3F;color:#fff}
-  #demo-stepper .ds-next:hover{background:#a84a31}
   #demo-stepper .ds-center{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:140px}
   #demo-stepper .ds-day{font-size:14px;color:#2E7D6B;font-weight:700}
   #demo-stepper .ds-day b{font-size:20px;color:#C25B3F}
-  #demo-stepper .ds-day span{font-size:12px;color:#9b7f6f;font-weight:600}
   #demo-stepper #ds-range{width:150px;accent-color:#C25B3F}
   body.dim .dim-overlay,body.dim .dim-note{display:none!important;opacity:0!important}
 </style>
 </head>
 <body>
 
-<!-- ===================== DEMO BAR ===================== -->
 <div id="demo-bar">
   <span class="demo-pill">DEMO</span>
-  <span class="demo-text">見本です。下の「次の日へ」で画面の推移を体験できます☺</span>
-  <button class="demo-reset" onclick="demoApply(1)">最初から</button>
+  <span class="demo-text">見本です。アプリ開始後、下の「次の日へ」で推移を体験できます☺</span>
 </div>
-
-<!-- ===================== ひめくりステッパー ===================== -->
-<div id="demo-stepper">
+<div id="demo-stepper" style="display:none">
   <button class="ds-btn" onclick="demoStep(-1)">‹ 前の日</button>
-  <div class="ds-center">
-    <div class="ds-day">DAY <b id="ds-num">1</b> <span>/ 30</span></div>
-    <input id="ds-range" type="range" min="1" max="30" value="1" oninput="demoApply(+this.value)">
-  </div>
+  <div class="ds-center"><div class="ds-day">DAY <b id="ds-num">1</b> <span>/ 30</span></div>
+  <input id="ds-range" type="range" min="1" max="30" value="1" oninput="demoApply(+this.value)"></div>
   <button class="ds-btn ds-next" onclick="demoStep(1)">次の日 ›</button>
 </div>
 
@@ -259,16 +262,23 @@
   </div>
 </div>
 
+<!-- ===================== 卒業証書 ===================== -->
+<div class="cert-back" id="cert-back">
+  <div class="cert-confetti" id="cert-confetti"></div>
+  <div class="cert-scroll">
+    <div id="cert-inner"><!-- rendered by showCertificate() --></div>
+    <button class="btn btn-ghost cert-close" onclick="closeCertificate()">とじる</button>
+  </div>
+</div>
+
 <script src="curriculum.js"></script>
 <script src="kumiko-messages.js"></script>
 <script src="morikumi.js"></script>
-<!-- DEMO: localStorage を専用namespaceに隔離（本番の進捗と混ざらない） -->
+<!-- demo: localStorage隔離 -->
 <script>
 (function(){
-  var g=localStorage.getItem.bind(localStorage),
-      s=localStorage.setItem.bind(localStorage),
-      r=localStorage.removeItem.bind(localStorage);
-  var NS=function(k){return (typeof k==='string'&&k.indexOf('reche30_')===0)?('demoNS_'+k):k;};
+  var g=localStorage.getItem.bind(localStorage),s=localStorage.setItem.bind(localStorage),r=localStorage.removeItem.bind(localStorage);
+  var NS=function(k){return (typeof k==="string"&&k.indexOf("reche30_")===0)?("demoNS_"+k):k;};
   localStorage.getItem=function(k){return g(NS(k));};
   localStorage.setItem=function(k,v){return s(NS(k),v);};
   localStorage.removeItem=function(k){return r(NS(k));};
@@ -553,7 +563,7 @@ function renderToday(s) {
     // 全部doneか、freeモードでtodayが特定できない場合
     const allDone = RECHE.doneCount(s) >= RECHE.TOTAL;
     if (allDone) {
-      sec.innerHTML = `<div class="mission-done-note">30日間の全ミッションが完了です。本当におつかれさまでした。</div>`;
+      sec.innerHTML = `<div class="mission-done-note">30日間の全ミッションが完了です。本当におつかれさまでした。<br><button class="btn btn-pri btn-sm" style="margin-top:10px" onclick="showCertificate()">卒業証書をひらく</button></div>`;
     } else {
       sec.innerHTML = "";
     }
@@ -874,6 +884,94 @@ function toggleCheck() {
 
 // ---- submit ----
 
+// ---- 卒業証書 ----
+function buildCertMessage(s) {
+  const nick = s.nick || "あなた";
+  let goal = "";
+  // DAY3の目標を最優先、無ければ最初の自由記述提出を拾う
+  if (s.progress[3] && s.progress[3].value && !/^https?:/.test(s.progress[3].value)) {
+    goal = s.progress[3].value;
+  } else {
+    for (let d = 1; d <= 30; d++) {
+      const p = s.progress[d];
+      if (p && p.value && p.value.length > 6 && !/^https?:/.test(p.value)) { goal = p.value; break; }
+    }
+  }
+  goal = (goal || "").trim().replace(/\s+/g, "");
+  if (goal.length > 42) goal = goal.slice(0, 42) + "…";
+  const done = RECHE.doneCount(s), stk = RECHE.streak(s);
+  let m = nick + "さんへ。30日間、本当におつかれさまでした。";
+  m += goal
+    ? "「" + goal + "」——最初に綴ってくれたあの想いを、私は今も覚えています。"
+    : "勇気を出して一歩を踏み出してくれたあの日のことを、私は今も覚えています。";
+  m += "はじめは不安もあったはずです。それでもあなたは、毎日こつこつと手を動かし続けました。"
+     + done + "個のミッションをやり遂げ、連続" + stk + "日を積み重ねたその姿は、"
+     + "「変わりたい」を『変わった』に変えた、まぎれもない証です。"
+     + "ここで身につけた数字の見方も、出品の型も、これからのあなたを必ず支えてくれます。"
+     + "卒業はゴールではなく、新しい毎日のはじまり。あなたならもう、大丈夫。これからも、ずっと応援しています。";
+  return m;
+}
+function buildCertificate(s) {
+  const done = RECHE.doneCount(s);
+  const animals = (window.GARDEN ? GARDEN.unlockedAnimals(done).length : 0);
+  const badges = RECHE.earnedBadges(s).length;
+  const stk = RECHE.streak(s);
+  const d = new Date();
+  const dateStr = d.getFullYear() + "年 " + (d.getMonth() + 1) + "月 " + d.getDate() + "日";
+  const portrait = `<img src="assets/morikumi/day30.png" alt="森川くみこ" onerror="this.style.display='none'">`;
+  return `
+    <div class="cert">
+      <div class="cert-frame"></div>
+      <div class="cert-portrait">${portrait}</div>
+      <div class="cert-in">
+        <div class="cert-kicker">Re:che 30 DAYS PROGRAM</div>
+        <div class="cert-title">卒業証書</div>
+        <div class="cert-suben">CERTIFICATE OF COMPLETION</div>
+        <div class="cert-ribbon">30日間 全ミッション達成</div>
+        <div class="cert-toline">この証書を、つぎの方に贈ります</div>
+        <div class="cert-name"><u>${RECHE.esc(s.nick || "あなた")}</u><small>さん</small></div>
+        <div class="cert-msg">${RECHE.esc(buildCertMessage(s))}</div>
+        <div class="cert-stats">
+          <div class="cst"><div class="n">${done}</div><div class="l">提出数</div></div>
+          <div class="cst"><div class="n">${stk}</div><div class="l">連続提出</div></div>
+          <div class="cst"><div class="n">${animals}</div><div class="l">おともだち</div></div>
+          <div class="cst"><div class="n">${badges}</div><div class="l">バッジ</div></div>
+        </div>
+        <div class="cert-sign">
+          <div class="cert-date">${dateStr}<br>株式会社Merone / Re:che</div>
+          <div class="cert-by">
+            <div class="cert-who"><div class="role">校長</div><div class="who">森川 くみこ</div></div>
+            <div class="cert-seal">修了<br>認定</div>
+          </div>
+        </div>
+        <div class="cert-bloom">あなたのお庭は、満開になりました</div>
+        <div class="cert-voice" id="cert-voice"></div>
+      </div>
+    </div>`;
+}
+function showCertificate() {
+  const s = RECHE.getState();
+  if (!s) return;
+  document.getElementById("cert-inner").innerHTML = buildCertificate(s);
+  document.getElementById("cert-back").classList.add("open");
+  document.body.style.overflow = "hidden";
+  // 紙吹雪
+  const cf = document.getElementById("cert-confetti");
+  const cols = ["#C25B3F", "#2E7D6B", "#D9A441", "#E8A293", "#9ECBBA"];
+  let html = "";
+  for (let i = 0; i < 70; i++) {
+    html += `<span class="ccf" style="left:${Math.random()*100}%;animation-delay:${(Math.random()*2.2).toFixed(2)}s;animation-duration:${(2.6+Math.random()*2).toFixed(2)}s;background:${cols[i%cols.length]};transform:rotate(${Math.random()*360}deg)"></span>`;
+  }
+  cf.innerHTML = html;
+  if (window.RECHE && RECHE.confetti) RECHE.confetti();
+  if (typeof mountVoice === "function") mountVoice("cert-voice", 30);
+}
+function closeCertificate() {
+  document.getElementById("cert-back").classList.remove("open");
+  document.getElementById("cert-confetti").innerHTML = "";
+  document.body.style.overflow = "";
+}
+
 // ---- LINEグループへコピペ提出 ----
 function lineSubmitText(day) {
   const s = RECHE.getState(); const def = RECHE.dayDef(day);
@@ -972,6 +1070,11 @@ function submitDay() {
   } else {
     RECHE.toast("提出しました。LINEグループ用にコピーもしたので、貼り付けて送ってね☺");
   }
+
+  // 30日すべて達成 → 卒業証書を表示
+  if (RECHE.doneCount(RECHE.getState()) >= RECHE.TOTAL) {
+    setTimeout(showCertificate, 650);
+  }
 }
 
 // ---- modal close ----
@@ -1014,36 +1117,29 @@ window.openDay = function(day) {
   });
 };
 </script>
-<!-- ===================== DEMO BOOTSTRAP（ひめくりシミュレーター） ===================== -->
+<!-- DEMO BOOTSTRAP -->
 <script>
 window.DEMO_DAY = 1;
-var DEMO_SAMPLES={
-  1:"出産前後の隙間時間で、まずは月3万円を目標にやってみます！",
-  3:"繰上げ返済を早めて、その先の投資フェーズに進みたいです。月10万が目標。",
-  7:"https://jp.mercari.com/user/profile/000000000"
-};
-function demoSeed(n){
+var DEMO_SAMPLES={1:"出産前後の隙間時間で、まずは月3万円を目標にやってみます！",3:"繰上げ返済を早めて、その先の投資フェーズに進みたいです。月10万が目標。",7:"https://jp.mercari.com/user/profile/000000000"};
+function demoSeed(n,nick){
   var prog={};
   for(var d=1; d<=n; d++){
     var def=RECHE_CURRICULUM.find(function(x){return x.day===d;})||{};
-    var p={ done:true, doneAt:new Date().toISOString() };
+    var p={done:true,doneAt:new Date().toISOString()};
     if(DEMO_SAMPLES[d]) p.value=DEMO_SAMPLES[d];
     else if(def.type==='report') p.report="今日の学びを書きました。明日からの出品に活かします。";
-    else if(def.type==='quiz' && def.quiz){ p.quiz={ score:(def.quiz.length||1), total:(def.quiz.length||1) }; }
+    else if(def.type==='quiz'&&def.quiz){p.quiz={score:(def.quiz.length||1),total:(def.quiz.length||1)};}
     else p.value="提出しました！";
     prog[d]=p;
   }
-  var startISO=(function(){ var t=new Date(); t.setDate(t.getDate()-(n-1)); return t.toISOString().slice(0,10); })();
-  var state={ nick:"デモ みさき", startDate:startISO, mode:"free", progress:prog, createdAt:new Date().toISOString() };
-  RECHE.saveState(state);
+  var startISO=(function(){var t=new Date();t.setDate(t.getDate()-(n-1));return t.toISOString().slice(0,10);})();
+  RECHE.saveState({nick:nick||"デモ みさき",startDate:startISO,mode:"free",progress:prog,createdAt:new Date().toISOString()});
 }
 function demoApply(n){
-  n=Math.max(1,Math.min(30,n|0));
-  DEMO_DAY=n;
-  localStorage.removeItem("reche30_state");
-  localStorage.removeItem("reche30_roster");
-  demoSeed(n);
-  demoSeedRoster(n);
+  n=Math.max(1,Math.min(30,n|0)); DEMO_DAY=n;
+  var cur=RECHE.getState(); var nick=(cur&&cur.nick)||"デモ みさき";
+  localStorage.removeItem("reche30_state"); localStorage.removeItem("reche30_roster");
+  demoSeed(n,nick); demoSeedRoster(n);
   var num=document.getElementById("ds-num"); if(num) num.textContent=n;
   var rng=document.getElementById("ds-range"); if(rng) rng.value=n;
   if(typeof renderAll==='function') renderAll();
@@ -1054,44 +1150,109 @@ function demoSeedRoster(n){
   var names=[["はな",n+3],["さくら",Math.max(1,n-2)],["あおい",Math.max(1,n-5)],["みお",Math.max(1,Math.floor(n/2))]];
   var R={};
   names.forEach(function(pair){
-    var nm=pair[0], dd=Math.min(30,pair[1]); var prog={};
-    for(var d=1; d<=dd; d++) prog[d]={done:true,doneAt:new Date().toISOString(),value:"提出"};
+    var nm=pair[0],dd=Math.min(30,pair[1]),prog={};
+    for(var d=1;d<=dd;d++) prog[d]={done:true,doneAt:new Date().toISOString(),value:"提出"};
     var fake={nick:nm,startDate:"2026-03-09",mode:"free",progress:prog};
-    R[nm]={nick:nm,startDate:"2026-03-09",mode:"free",progress:prog,
-      points:RECHE.totalPoints(fake),done:RECHE.doneCount(fake),streak:RECHE.streak(fake),
-      level:RECHE.level(RECHE.totalPoints(fake)).name,lv:RECHE.level(RECHE.totalPoints(fake)).lv,
-      updatedAt:new Date().toISOString()};
+    R[nm]={nick:nm,startDate:"2026-03-09",mode:"free",progress:prog,points:RECHE.totalPoints(fake),done:RECHE.doneCount(fake),streak:RECHE.streak(fake),level:RECHE.level(RECHE.totalPoints(fake)).name,lv:RECHE.level(RECHE.totalPoints(fake)).lv,updatedAt:new Date().toISOString()};
   });
   localStorage.setItem("reche30_roster", JSON.stringify(R));
 }
 window.MORIKUMI_TODAY=function(){
   var i=DEMO_DAY-1;
-  var ph=MORIKUMI.photos.length?MORIKUMI.photos[i%MORIKUMI.photos.length]:(MORIKUMI.fallback.photo||"");
-  var tx=MORIKUMI.lines.length?MORIKUMI.lines[i%MORIKUMI.lines.length]:(MORIKUMI.fallback.text||"");
-  return { date:RECHE.todayISO(), text:tx, photo:ph };
+  return {date:RECHE.todayISO(),
+    text:MORIKUMI.lines.length?MORIKUMI.lines[i%MORIKUMI.lines.length]:(MORIKUMI.fallback.text||""),
+    photo:MORIKUMI.photos.length?MORIKUMI.photos[i%MORIKUMI.photos.length]:(MORIKUMI.fallback.photo||"")};
 };
 window.targetDay=function(){ return DEMO_DAY; };
 window.renderToday=function(s){
   var sec=document.getElementById("today-section"); if(!sec) return;
-  if(!s){ sec.innerHTML=""; return; }
+  if(!s){sec.innerHTML="";return;}
+  if(DEMO_DAY>=30){
+    sec.innerHTML='<div class="mission-done-note">30日間の全ミッションが完了です。本当におつかれさまでした。<br><button class="btn btn-pri btn-sm" style="margin-top:10px" onclick="showCertificate()">卒業証書をひらく</button></div>';
+    return;
+  }
   var def=RECHE.dayDef(DEMO_DAY)||{};
-  sec.innerHTML=
-    '<div class="mission-banner"><div class="mb-icon">'+
-      '<svg width="26" height="26" viewBox="0 0 24 24" fill="none">'+
-      '<circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/>'+
-      '<path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
-    '</div><div class="mb-body">'+
-      '<div class="mb-label">TODAY&apos;S MISSION &nbsp;DAY '+DEMO_DAY+'</div>'+
-      '<div class="mb-title">'+RECHE.esc(def.title||"")+'</div>'+
-      '<button class="btn btn-pri btn-sm" onclick="openDay('+DEMO_DAY+')">今日のミッションを開く</button>'+
-    '</div></div>';
+  sec.innerHTML='<div class="mission-banner"><div class="mb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="mb-body"><div class="mb-label">TODAY&apos;S MISSION &nbsp;DAY '+DEMO_DAY+'</div><div class="mb-title">'+RECHE.esc(def.title||"")+'</div><button class="btn btn-pri btn-sm" onclick="openDay('+DEMO_DAY+')">今日のミッションを開く</button></div></div>';
 };
 window.renderDim=function(){ document.body.classList.remove("dim"); };
-(function(){
+
+var _realShowApp = showApp;
+window.showApp = function(){
   var ob=document.getElementById("onboarding"); if(ob) ob.style.display="none";
-  var app=document.getElementById("app"); if(app) app.style.display="block";
+  var s=RECHE.getState(); var nk=document.getElementById("intro-nick");
+  if(nk&&s) nk.textContent=(s.nick||"");
+  var ap=document.getElementById("app"); if(ap) ap.style.display="none";
+  document.getElementById("intro-screen").style.display="block";
+  window.scrollTo(0,0);
+};
+
+function introStart(){
+  document.getElementById("intro-screen").style.display="none";
+  document.getElementById("app").style.display="block";
+  var st=document.getElementById("demo-stepper"); if(st) st.style.display="flex";
   demoApply(1);
+}
+// 進め方選択を隠してfree固定（オンボーディングはそのまま使う）
+(function(){
+  var free=document.querySelector("input[name=ob-mode][value=free]"); if(free) free.checked=true;
+  // 既にアカウントがあれば説明を出さず直接アプリ＋ステッパー
+  if(RECHE.hasAccount()){
+    var ob=document.getElementById("onboarding"); if(ob) ob.style.display="none";
+    document.getElementById("app").style.display="block";
+    var stp=document.getElementById("demo-stepper"); if(stp) stp.style.display="flex";
+    demoApply(1);
+  }
 })();
 </script>
+
+<!-- ===================== スタート説明画面 ===================== -->
+<div id="intro-screen">
+  <div class="intro-card">
+    <div class="intro-logo">R</div>
+    <h2 class="intro-h">ようこそ、<span id="intro-nick"></span>さん</h2>
+    <p class="intro-lead">Re:cheの30日プログラムは、<br>こんな体験ができます☺</p>
+
+    <div class="intro-item">
+      <div class="intro-num">1</div>
+      <div class="intro-body">
+        <h3>30日やり遂げると「卒業証書」</h3>
+        <p>全ミッションを達成すると、あなたの歩みと、あなた自身の言葉を綴った“あなただけの卒業証書”が贈られます。</p>
+        <img class="intro-cert" src="assets/cert-sample.png" alt="卒業証書のイメージ" loading="lazy">
+      </div>
+    </div>
+
+    <div class="intro-item">
+      <div class="intro-num">2</div>
+      <div class="intro-body">
+        <h3>毎日続けたくなる、お庭の育成</h3>
+        <p>課題を提出するほど、動物や草木が増えていきます。でも2日提出がないと画面が暗くなり、動物や草木も元気をなくします…。課題を1つ出せば、画面に光が戻り、みんなまた元気になりますよ。</p>
+        <div class="intro-mini">
+          <div class="im-tile genki"><div class="dotrow"><span></span><span></span><span></span></div>げんき</div>
+          <div class="im-arrow">→</div>
+          <div class="im-tile sabori"><div class="dotrow"><span></span><span></span><span></span></div>2日おやすみ…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="intro-item">
+      <div class="intro-num">3</div>
+      <div class="intro-body">
+        <h3>講師から30日間フィードバック</h3>
+        <p>本プログラムでは、提出した課題に講師が30日間ずっとコメント・アドバイスをくれます。ひとりで抱え込まず、伴走してもらえます。</p>
+      </div>
+    </div>
+
+    <div class="intro-item">
+      <div class="intro-num">4</div>
+      <div class="intro-body">
+        <h3>仲間と一緒に取り組める</h3>
+        <p>同じ目標をもつ仲間とグループで、励まし合いながら続けられます。提出はLINEグループにもコピペで共有できます。</p>
+      </div>
+    </div>
+
+    <button class="btn btn-pri intro-start" onclick="introStart()">はじめる</button>
+  </div>
+</div>
+
 </body>
 </html>

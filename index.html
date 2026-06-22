@@ -7,7 +7,7 @@
   <title>Re:che 30DAYS プログラム</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
     /* ---- onboarding screen ---- */
@@ -214,6 +214,15 @@
 <div class="modal-back" id="modal-back" onclick="closeModalBack(event)">
   <div class="modal" id="modal-inner">
     <!-- rendered by openDay() -->
+  </div>
+</div>
+
+<!-- ===================== 卒業証書 ===================== -->
+<div class="cert-back" id="cert-back">
+  <div class="cert-confetti" id="cert-confetti"></div>
+  <div class="cert-scroll">
+    <div id="cert-inner"><!-- rendered by showCertificate() --></div>
+    <button class="btn btn-ghost cert-close" onclick="closeCertificate()">とじる</button>
   </div>
 </div>
 
@@ -499,7 +508,7 @@ function renderToday(s) {
     // 全部doneか、freeモードでtodayが特定できない場合
     const allDone = RECHE.doneCount(s) >= RECHE.TOTAL;
     if (allDone) {
-      sec.innerHTML = `<div class="mission-done-note">30日間の全ミッションが完了です。本当におつかれさまでした。</div>`;
+      sec.innerHTML = `<div class="mission-done-note">30日間の全ミッションが完了です。本当におつかれさまでした。<br><button class="btn btn-pri btn-sm" style="margin-top:10px" onclick="showCertificate()">卒業証書をひらく</button></div>`;
     } else {
       sec.innerHTML = "";
     }
@@ -820,6 +829,94 @@ function toggleCheck() {
 
 // ---- submit ----
 
+// ---- 卒業証書 ----
+function buildCertMessage(s) {
+  const nick = s.nick || "あなた";
+  let goal = "";
+  // DAY3の目標を最優先、無ければ最初の自由記述提出を拾う
+  if (s.progress[3] && s.progress[3].value && !/^https?:/.test(s.progress[3].value)) {
+    goal = s.progress[3].value;
+  } else {
+    for (let d = 1; d <= 30; d++) {
+      const p = s.progress[d];
+      if (p && p.value && p.value.length > 6 && !/^https?:/.test(p.value)) { goal = p.value; break; }
+    }
+  }
+  goal = (goal || "").trim().replace(/\s+/g, "");
+  if (goal.length > 42) goal = goal.slice(0, 42) + "…";
+  const done = RECHE.doneCount(s), stk = RECHE.streak(s);
+  let m = nick + "さんへ。30日間、本当におつかれさまでした。";
+  m += goal
+    ? "「" + goal + "」——最初に綴ってくれたあの想いを、私は今も覚えています。"
+    : "勇気を出して一歩を踏み出してくれたあの日のことを、私は今も覚えています。";
+  m += "はじめは不安もあったはずです。それでもあなたは、毎日こつこつと手を動かし続けました。"
+     + done + "個のミッションをやり遂げ、連続" + stk + "日を積み重ねたその姿は、"
+     + "「変わりたい」を『変わった』に変えた、まぎれもない証です。"
+     + "ここで身につけた数字の見方も、出品の型も、これからのあなたを必ず支えてくれます。"
+     + "卒業はゴールではなく、新しい毎日のはじまり。あなたならもう、大丈夫。これからも、ずっと応援しています。";
+  return m;
+}
+function buildCertificate(s) {
+  const done = RECHE.doneCount(s);
+  const animals = (window.GARDEN ? GARDEN.unlockedAnimals(done).length : 0);
+  const badges = RECHE.earnedBadges(s).length;
+  const stk = RECHE.streak(s);
+  const d = new Date();
+  const dateStr = d.getFullYear() + "年 " + (d.getMonth() + 1) + "月 " + d.getDate() + "日";
+  const portrait = `<img src="assets/morikumi/day30.png" alt="森川くみこ" onerror="this.style.display='none'">`;
+  return `
+    <div class="cert">
+      <div class="cert-frame"></div>
+      <div class="cert-portrait">${portrait}</div>
+      <div class="cert-in">
+        <div class="cert-kicker">Re:che 30 DAYS PROGRAM</div>
+        <div class="cert-title">卒業証書</div>
+        <div class="cert-suben">CERTIFICATE OF COMPLETION</div>
+        <div class="cert-ribbon">30日間 全ミッション達成</div>
+        <div class="cert-toline">この証書を、つぎの方に贈ります</div>
+        <div class="cert-name"><u>${RECHE.esc(s.nick || "あなた")}</u><small>さん</small></div>
+        <div class="cert-msg">${RECHE.esc(buildCertMessage(s))}</div>
+        <div class="cert-stats">
+          <div class="cst"><div class="n">${done}</div><div class="l">提出数</div></div>
+          <div class="cst"><div class="n">${stk}</div><div class="l">連続提出</div></div>
+          <div class="cst"><div class="n">${animals}</div><div class="l">おともだち</div></div>
+          <div class="cst"><div class="n">${badges}</div><div class="l">バッジ</div></div>
+        </div>
+        <div class="cert-sign">
+          <div class="cert-date">${dateStr}<br>株式会社Merone / Re:che</div>
+          <div class="cert-by">
+            <div class="cert-who"><div class="role">校長</div><div class="who">森川 くみこ</div></div>
+            <div class="cert-seal">修了<br>認定</div>
+          </div>
+        </div>
+        <div class="cert-bloom">あなたのお庭は、満開になりました</div>
+        <div class="cert-voice" id="cert-voice"></div>
+      </div>
+    </div>`;
+}
+function showCertificate() {
+  const s = RECHE.getState();
+  if (!s) return;
+  document.getElementById("cert-inner").innerHTML = buildCertificate(s);
+  document.getElementById("cert-back").classList.add("open");
+  document.body.style.overflow = "hidden";
+  // 紙吹雪
+  const cf = document.getElementById("cert-confetti");
+  const cols = ["#C25B3F", "#2E7D6B", "#D9A441", "#E8A293", "#9ECBBA"];
+  let html = "";
+  for (let i = 0; i < 70; i++) {
+    html += `<span class="ccf" style="left:${Math.random()*100}%;animation-delay:${(Math.random()*2.2).toFixed(2)}s;animation-duration:${(2.6+Math.random()*2).toFixed(2)}s;background:${cols[i%cols.length]};transform:rotate(${Math.random()*360}deg)"></span>`;
+  }
+  cf.innerHTML = html;
+  if (window.RECHE && RECHE.confetti) RECHE.confetti();
+  if (typeof mountVoice === "function") mountVoice("cert-voice", 30);
+}
+function closeCertificate() {
+  document.getElementById("cert-back").classList.remove("open");
+  document.getElementById("cert-confetti").innerHTML = "";
+  document.body.style.overflow = "";
+}
+
 // ---- LINEグループへコピペ提出 ----
 function lineSubmitText(day) {
   const s = RECHE.getState(); const def = RECHE.dayDef(day);
@@ -917,6 +1014,11 @@ function submitDay() {
     RECHE.toast(msg.trim());
   } else {
     RECHE.toast("提出しました。LINEグループ用にコピーもしたので、貼り付けて送ってね☺");
+  }
+
+  // 30日すべて達成 → 卒業証書を表示
+  if (RECHE.doneCount(RECHE.getState()) >= RECHE.TOTAL) {
+    setTimeout(showCertificate, 650);
   }
 }
 

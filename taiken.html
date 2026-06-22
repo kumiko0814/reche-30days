@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>Re:che 30DAYS（体験版）</title>
+  <title>Re:che 30DAYS （体験版）</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
     /* ---- onboarding screen ---- */
@@ -92,32 +92,45 @@
     #app{ display:none; }
   </style>
 <style>
-  #trial-bar{position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:10px;
-    flex-wrap:wrap;justify-content:center;background:linear-gradient(90deg,#2E7D6B,#C25B3F);
-    color:#fff;padding:10px 14px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
-  #trial-bar .trial-pill{background:#fff;color:#C25B3F;font-weight:700;border-radius:999px;
-    padding:2px 12px;letter-spacing:.06em;font-size:11px}
-  /* 5日目以降のカードをぼかしてロック */
+
+  #intro-screen{position:fixed;inset:0;z-index:90;display:none;background:#FBF5EC;overflow-y:auto;padding:22px 16px;font-family:"Zen Maru Gothic","游ゴシック",sans-serif}
+  .intro-card{max-width:430px;margin:0 auto}
+  .intro-logo{width:52px;height:52px;border-radius:15px;background:#C25B3F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 14px}
+  .intro-h{text-align:center;font-size:20px;color:#2E7D6B;margin-bottom:4px;font-weight:700}
+  .intro-lead{text-align:center;font-size:13px;color:#7a6a5e;margin-bottom:20px;line-height:1.7}
+  .intro-item{display:flex;gap:12px;background:#fff;border:1px solid #eee0cf;border-radius:16px;padding:15px;margin-bottom:13px}
+  .intro-num{flex:0 0 28px;height:28px;border-radius:50%;background:#2E7D6B;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .intro-body h3{font-size:15px;color:#C25B3F;margin-bottom:5px}
+  .intro-body p{font-size:12.5px;line-height:1.85;color:#5a4c42}
+  .intro-cert{width:100%;border-radius:10px;margin-top:10px;box-shadow:0 8px 20px rgba(0,0,0,.14);border:1px solid #eee}
+  .intro-mini{display:flex;align-items:center;gap:10px;margin-top:10px}
+  .im-tile{flex:1;height:50px;border-radius:10px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-size:10px;font-weight:700;color:#fff;position:relative;overflow:hidden}
+  .im-tile.genki{background:linear-gradient(180deg,#bfe3d3,#7FB7A7)}
+  .im-tile.sabori{background:linear-gradient(180deg,#b7b0a8,#8d857c)}
+  .im-tile .dotrow{position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;gap:6px}
+  .im-tile .dotrow span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.85)}
+  .im-tile.sabori .dotrow span{background:rgba(255,255,255,.45)}
+  .im-arrow{color:#b89a72;font-weight:700;font-size:18px}
+  .intro-start{width:100%;margin-top:8px;font-size:16px;padding:14px}
+
+
+  #trial-bar{position:sticky;top:0;z-index:80;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;background:linear-gradient(90deg,#2E7D6B,#C25B3F);color:#fff;padding:10px 14px;font-size:13px}
+  #trial-bar .trial-pill{background:#fff;color:#C25B3F;font-weight:700;border-radius:999px;padding:2px 12px;font-size:11px}
   .daycard.trial-blur{position:relative;cursor:pointer}
   .daycard.trial-blur > *{filter:blur(4.5px);opacity:.65}
   .daycard.trial-blur .trial-ov{filter:none;opacity:1}
-  .trial-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
-    justify-content:center;gap:4px;color:#9b8576;background:rgba(251,245,236,.35);border-radius:inherit}
+  .trial-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#9b8576;background:rgba(251,245,236,.35);border-radius:inherit}
   .trial-ov .tl-txt{font-size:10.5px;font-weight:700;color:#C25B3F;text-align:center;line-height:1.4}
-  /* ロック画面（モーダル） */
   .trial-lock{text-align:center;padding:14px 6px 6px}
-  .trial-lock .tl-ic{margin:0 auto 12px;width:64px;height:64px;border-radius:50%;
-    background:#FBF5EC;display:flex;align-items:center;justify-content:center}
+  .trial-lock .tl-ic{margin:0 auto 12px;width:64px;height:64px;border-radius:50%;background:#FBF5EC;display:flex;align-items:center;justify-content:center}
   .trial-lock h3{font-size:18px;color:#2E7D6B;margin:0 0 10px}
   .trial-lock .tl-main{font-size:16px;font-weight:700;color:#C25B3F;line-height:1.7;margin:0 0 12px}
   .trial-lock .tl-sub{font-size:13px;color:#7a6a5e;line-height:1.8;margin:0}
-  /* 体験版は進め方選択を隠してfree固定 */
   .field:has(.mode-select){display:none}
 </style>
 </head>
 <body>
 
-<!-- ===================== TRIAL BAR ===================== -->
 <div id="trial-bar">
   <span class="trial-pill">体験版</span>
   <span class="trial-text">最初の4日間だけ、無料でおためしできます☺</span>
@@ -246,16 +259,23 @@
   </div>
 </div>
 
+<!-- ===================== 卒業証書 ===================== -->
+<div class="cert-back" id="cert-back">
+  <div class="cert-confetti" id="cert-confetti"></div>
+  <div class="cert-scroll">
+    <div id="cert-inner"><!-- rendered by showCertificate() --></div>
+    <button class="btn btn-ghost cert-close" onclick="closeCertificate()">とじる</button>
+  </div>
+</div>
+
 <script src="curriculum.js"></script>
 <script src="kumiko-messages.js"></script>
 <script src="morikumi.js"></script>
-<!-- TRIAL: localStorage を専用namespaceに隔離 -->
+<!-- taiken: localStorage隔離 -->
 <script>
 (function(){
-  var g=localStorage.getItem.bind(localStorage),
-      s=localStorage.setItem.bind(localStorage),
-      r=localStorage.removeItem.bind(localStorage);
-  var NS=function(k){return (typeof k==='string'&&k.indexOf('reche30_')===0)?('trialNS_'+k):k;};
+  var g=localStorage.getItem.bind(localStorage),s=localStorage.setItem.bind(localStorage),r=localStorage.removeItem.bind(localStorage);
+  var NS=function(k){return (typeof k==="string"&&k.indexOf("reche30_")===0)?("trialNS_"+k):k;};
   localStorage.getItem=function(k){return g(NS(k));};
   localStorage.setItem=function(k,v){return s(NS(k),v);};
   localStorage.removeItem=function(k){return r(NS(k));};
@@ -540,7 +560,7 @@ function renderToday(s) {
     // 全部doneか、freeモードでtodayが特定できない場合
     const allDone = RECHE.doneCount(s) >= RECHE.TOTAL;
     if (allDone) {
-      sec.innerHTML = `<div class="mission-done-note">30日間の全ミッションが完了です。本当におつかれさまでした。</div>`;
+      sec.innerHTML = `<div class="mission-done-note">30日間の全ミッションが完了です。本当におつかれさまでした。<br><button class="btn btn-pri btn-sm" style="margin-top:10px" onclick="showCertificate()">卒業証書をひらく</button></div>`;
     } else {
       sec.innerHTML = "";
     }
@@ -861,6 +881,94 @@ function toggleCheck() {
 
 // ---- submit ----
 
+// ---- 卒業証書 ----
+function buildCertMessage(s) {
+  const nick = s.nick || "あなた";
+  let goal = "";
+  // DAY3の目標を最優先、無ければ最初の自由記述提出を拾う
+  if (s.progress[3] && s.progress[3].value && !/^https?:/.test(s.progress[3].value)) {
+    goal = s.progress[3].value;
+  } else {
+    for (let d = 1; d <= 30; d++) {
+      const p = s.progress[d];
+      if (p && p.value && p.value.length > 6 && !/^https?:/.test(p.value)) { goal = p.value; break; }
+    }
+  }
+  goal = (goal || "").trim().replace(/\s+/g, "");
+  if (goal.length > 42) goal = goal.slice(0, 42) + "…";
+  const done = RECHE.doneCount(s), stk = RECHE.streak(s);
+  let m = nick + "さんへ。30日間、本当におつかれさまでした。";
+  m += goal
+    ? "「" + goal + "」——最初に綴ってくれたあの想いを、私は今も覚えています。"
+    : "勇気を出して一歩を踏み出してくれたあの日のことを、私は今も覚えています。";
+  m += "はじめは不安もあったはずです。それでもあなたは、毎日こつこつと手を動かし続けました。"
+     + done + "個のミッションをやり遂げ、連続" + stk + "日を積み重ねたその姿は、"
+     + "「変わりたい」を『変わった』に変えた、まぎれもない証です。"
+     + "ここで身につけた数字の見方も、出品の型も、これからのあなたを必ず支えてくれます。"
+     + "卒業はゴールではなく、新しい毎日のはじまり。あなたならもう、大丈夫。これからも、ずっと応援しています。";
+  return m;
+}
+function buildCertificate(s) {
+  const done = RECHE.doneCount(s);
+  const animals = (window.GARDEN ? GARDEN.unlockedAnimals(done).length : 0);
+  const badges = RECHE.earnedBadges(s).length;
+  const stk = RECHE.streak(s);
+  const d = new Date();
+  const dateStr = d.getFullYear() + "年 " + (d.getMonth() + 1) + "月 " + d.getDate() + "日";
+  const portrait = `<img src="assets/morikumi/day30.png" alt="森川くみこ" onerror="this.style.display='none'">`;
+  return `
+    <div class="cert">
+      <div class="cert-frame"></div>
+      <div class="cert-portrait">${portrait}</div>
+      <div class="cert-in">
+        <div class="cert-kicker">Re:che 30 DAYS PROGRAM</div>
+        <div class="cert-title">卒業証書</div>
+        <div class="cert-suben">CERTIFICATE OF COMPLETION</div>
+        <div class="cert-ribbon">30日間 全ミッション達成</div>
+        <div class="cert-toline">この証書を、つぎの方に贈ります</div>
+        <div class="cert-name"><u>${RECHE.esc(s.nick || "あなた")}</u><small>さん</small></div>
+        <div class="cert-msg">${RECHE.esc(buildCertMessage(s))}</div>
+        <div class="cert-stats">
+          <div class="cst"><div class="n">${done}</div><div class="l">提出数</div></div>
+          <div class="cst"><div class="n">${stk}</div><div class="l">連続提出</div></div>
+          <div class="cst"><div class="n">${animals}</div><div class="l">おともだち</div></div>
+          <div class="cst"><div class="n">${badges}</div><div class="l">バッジ</div></div>
+        </div>
+        <div class="cert-sign">
+          <div class="cert-date">${dateStr}<br>株式会社Merone / Re:che</div>
+          <div class="cert-by">
+            <div class="cert-who"><div class="role">校長</div><div class="who">森川 くみこ</div></div>
+            <div class="cert-seal">修了<br>認定</div>
+          </div>
+        </div>
+        <div class="cert-bloom">あなたのお庭は、満開になりました</div>
+        <div class="cert-voice" id="cert-voice"></div>
+      </div>
+    </div>`;
+}
+function showCertificate() {
+  const s = RECHE.getState();
+  if (!s) return;
+  document.getElementById("cert-inner").innerHTML = buildCertificate(s);
+  document.getElementById("cert-back").classList.add("open");
+  document.body.style.overflow = "hidden";
+  // 紙吹雪
+  const cf = document.getElementById("cert-confetti");
+  const cols = ["#C25B3F", "#2E7D6B", "#D9A441", "#E8A293", "#9ECBBA"];
+  let html = "";
+  for (let i = 0; i < 70; i++) {
+    html += `<span class="ccf" style="left:${Math.random()*100}%;animation-delay:${(Math.random()*2.2).toFixed(2)}s;animation-duration:${(2.6+Math.random()*2).toFixed(2)}s;background:${cols[i%cols.length]};transform:rotate(${Math.random()*360}deg)"></span>`;
+  }
+  cf.innerHTML = html;
+  if (window.RECHE && RECHE.confetti) RECHE.confetti();
+  if (typeof mountVoice === "function") mountVoice("cert-voice", 30);
+}
+function closeCertificate() {
+  document.getElementById("cert-back").classList.remove("open");
+  document.getElementById("cert-confetti").innerHTML = "";
+  document.body.style.overflow = "";
+}
+
 // ---- LINEグループへコピペ提出 ----
 function lineSubmitText(day) {
   const s = RECHE.getState(); const def = RECHE.dayDef(day);
@@ -959,6 +1067,11 @@ function submitDay() {
   } else {
     RECHE.toast("提出しました。LINEグループ用にコピーもしたので、貼り付けて送ってね☺");
   }
+
+  // 30日すべて達成 → 卒業証書を表示
+  if (RECHE.doneCount(RECHE.getState()) >= RECHE.TOTAL) {
+    setTimeout(showCertificate, 650);
+  }
 }
 
 // ---- modal close ----
@@ -1001,71 +1114,42 @@ window.openDay = function(day) {
   });
 };
 </script>
-<!-- ===================== TRIAL BOOTSTRAP ===================== -->
+<!-- TRIAL BOOTSTRAP -->
 <script>
 window.TRIAL_MAX = 4;
-
 function showTrialLock(){
-  var lockSvg='<svg width="30" height="30" viewBox="0 0 24 24" fill="none">'+
-    '<rect x="4" y="10" width="16" height="11" rx="3" stroke="#C25B3F" stroke-width="1.6"/>'+
-    '<path d="M8 10V7a4 4 0 018 0v3" stroke="#C25B3F" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  var lockSvg='<svg width="30" height="30" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="11" rx="3" stroke="#C25B3F" stroke-width="1.6"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#C25B3F" stroke-width="1.6" stroke-linecap="round"/></svg>';
   document.getElementById("modal-inner").innerHTML=
     '<button class="close-x" onclick="closeModal()" aria-label="閉じる">&times;</button>'+
-    '<div class="trial-lock">'+
-      '<div class="tl-ic">'+lockSvg+'</div>'+
-      '<h3>ここから先は…</h3>'+
-      '<p class="tl-main">ここからは Re:che にご縁があったら<br>受講できます✨</p>'+
-      '<p class="tl-sub">5日目以降の全カリキュラム・毎日届くくみこのボイス・お庭の続きが、すべて解放されます。<br>続きを楽しみにしていてくださいね☺</p>'+
-    '</div>';
+    '<div class="trial-lock"><div class="tl-ic">'+lockSvg+'</div>'+
+    '<h3>ここから先は…</h3>'+
+    '<p class="tl-main">ここからは Re:che にご縁があったら<br>受講できます✨</p>'+
+    '<p class="tl-sub">5日目以降の全カリキュラム・毎日届くくみこのボイス・お庭の続きが、すべて解放されます。<br>続きを楽しみにしていてくださいね☺</p></div>';
   document.getElementById("modal-back").classList.add("open");
   document.body.style.overflow="hidden";
 }
-
-// 4日目までだけ開ける。5日目以降はロック画面
 var _origOpenDay = openDay;
 window.openDay = function(d){ if(d>TRIAL_MAX){ showTrialLock(); return; } _origOpenDay(d); };
-
-// 今日のボイス/写真は1〜4日に限定（5日目以降の内容を出さない）
 window.targetDay = function(){
   var s=RECHE.getState(); if(!s) return 1;
   for(var i=1;i<=TRIAL_MAX;i++){ if(!(s.progress[i]&&s.progress[i].done)) return i; }
   return TRIAL_MAX;
 };
-
-// 今日のミッション＝1〜4の最初の未提出。全部済んだら締めメッセージ
 window.renderToday = function(s){
   var sec=document.getElementById("today-section"); if(!sec) return;
-  if(!s){ sec.innerHTML=""; return; }
-  var d=0;
-  for(var i=1;i<=TRIAL_MAX;i++){ if(!(s.progress[i]&&s.progress[i].done)){ d=i; break; } }
-  if(!d){
-    sec.innerHTML='<div class="mission-done-note">体験版の4日間、おつかれさまでした☺<br>続きは Re:che にご縁があったら受講できます✨</div>';
-    return;
-  }
+  if(!s){sec.innerHTML="";return;}
+  var d=0; for(var i=1;i<=TRIAL_MAX;i++){ if(!(s.progress[i]&&s.progress[i].done)){d=i;break;} }
+  if(!d){ sec.innerHTML='<div class="mission-done-note">体験版の4日間、おつかれさまでした☺<br>続きは Re:che にご縁があったら受講できます✨</div>'; return; }
   var def=RECHE.dayDef(d)||{};
-  sec.innerHTML=
-    '<div class="mission-banner"><div class="mb-icon">'+
-      '<svg width="26" height="26" viewBox="0 0 24 24" fill="none">'+
-      '<circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/>'+
-      '<path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
-    '</div><div class="mb-body">'+
-      '<div class="mb-label">TODAY&apos;S MISSION &nbsp;DAY '+d+'</div>'+
-      '<div class="mb-title">'+RECHE.esc(def.title||"")+'</div>'+
-      '<button class="btn btn-pri btn-sm" onclick="openDay('+d+')">今日のミッションを開く</button>'+
-    '</div></div>';
+  sec.innerHTML='<div class="mission-banner"><div class="mb-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M8 12l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="mb-body"><div class="mb-label">TODAY&apos;S MISSION &nbsp;DAY '+d+'</div><div class="mb-title">'+RECHE.esc(def.title||"")+'</div><button class="btn btn-pri btn-sm" onclick="openDay('+d+')">今日のミッションを開く</button></div></div>';
 };
-
-// 5日目以降のカードをぼかしてロック表示
 function trialDecorate(){
   var cards=document.querySelectorAll("#days-grid .daycard");
   cards.forEach(function(c,i){
     if(i>=TRIAL_MAX && !c.querySelector(".trial-ov")){
       c.classList.add("trial-blur");
       var ov=document.createElement("div"); ov.className="trial-ov";
-      ov.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none">'+
-        '<rect x="4" y="10" width="16" height="11" rx="3" stroke="#C25B3F" stroke-width="1.6"/>'+
-        '<path d="M8 10V7a4 4 0 018 0v3" stroke="#C25B3F" stroke-width="1.6" stroke-linecap="round"/></svg>'+
-        '<span class="tl-txt">ご縁があったら<br>解放</span>';
+      ov.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="11" rx="3" stroke="#C25B3F" stroke-width="1.6"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#C25B3F" stroke-width="1.6" stroke-linecap="round"/></svg><span class="tl-txt">ご縁があったら<br>解放</span>';
       c.appendChild(ov);
     }
   });
@@ -1073,17 +1157,78 @@ function trialDecorate(){
 var _origRenderAll = renderAll;
 window.renderAll = function(){ _origRenderAll(); trialDecorate(); };
 
-// 起動：オンボーディングは出す（名前を入れて体験開始）。modeはfree固定。
+var _realShowApp = showApp;
+window.showApp = function(){
+  var ob=document.getElementById("onboarding"); if(ob) ob.style.display="none";
+  var s=RECHE.getState(); var nk=document.getElementById("intro-nick");
+  if(nk&&s) nk.textContent=(s.nick||"");
+  var ap=document.getElementById("app"); if(ap) ap.style.display="none";
+  document.getElementById("intro-screen").style.display="block";
+  window.scrollTo(0,0);
+};
+
+function introStart(){
+  document.getElementById("intro-screen").style.display="none";
+  _realShowApp();
+}
 (function(){
-  // mode選択は隠してfree固定
-  var modeRow=document.querySelector("input[name=ob-mode][value=free]");
-  if(modeRow) modeRow.checked=true;
+  var free=document.querySelector("input[name=ob-mode][value=free]"); if(free) free.checked=true;
   if(RECHE.hasAccount()){
     var ob=document.getElementById("onboarding"); if(ob) ob.style.display="none";
-    var app=document.getElementById("app"); if(app) app.style.display="block";
+    document.getElementById("app").style.display="block";
   }
   renderAll();
 })();
 </script>
+
+<!-- ===================== スタート説明画面 ===================== -->
+<div id="intro-screen">
+  <div class="intro-card">
+    <div class="intro-logo">R</div>
+    <h2 class="intro-h">ようこそ、<span id="intro-nick"></span>さん</h2>
+    <p class="intro-lead">Re:cheの30日プログラムは、<br>こんな体験ができます☺</p>
+
+    <div class="intro-item">
+      <div class="intro-num">1</div>
+      <div class="intro-body">
+        <h3>30日やり遂げると「卒業証書」</h3>
+        <p>全ミッションを達成すると、あなたの歩みと、あなた自身の言葉を綴った“あなただけの卒業証書”が贈られます。</p>
+        <img class="intro-cert" src="assets/cert-sample.png" alt="卒業証書のイメージ" loading="lazy">
+      </div>
+    </div>
+
+    <div class="intro-item">
+      <div class="intro-num">2</div>
+      <div class="intro-body">
+        <h3>毎日続けたくなる、お庭の育成</h3>
+        <p>課題を提出するほど、動物や草木が増えていきます。でも2日提出がないと画面が暗くなり、動物や草木も元気をなくします…。課題を1つ出せば、画面に光が戻り、みんなまた元気になりますよ。</p>
+        <div class="intro-mini">
+          <div class="im-tile genki"><div class="dotrow"><span></span><span></span><span></span></div>げんき</div>
+          <div class="im-arrow">→</div>
+          <div class="im-tile sabori"><div class="dotrow"><span></span><span></span><span></span></div>2日おやすみ…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="intro-item">
+      <div class="intro-num">3</div>
+      <div class="intro-body">
+        <h3>講師から30日間フィードバック</h3>
+        <p>本プログラムでは、提出した課題に講師が30日間ずっとコメント・アドバイスをくれます。ひとりで抱え込まず、伴走してもらえます。</p>
+      </div>
+    </div>
+
+    <div class="intro-item">
+      <div class="intro-num">4</div>
+      <div class="intro-body">
+        <h3>仲間と一緒に取り組める</h3>
+        <p>同じ目標をもつ仲間とグループで、励まし合いながら続けられます。提出はLINEグループにもコピペで共有できます。</p>
+      </div>
+    </div>
+
+    <button class="btn btn-pri intro-start" onclick="introStart()">はじめる</button>
+  </div>
+</div>
+
 </body>
 </html>
