@@ -424,7 +424,7 @@ function mountVoice(elId, day) {
     host.innerHTML = `
       <button class="voice-btn" type="button" onclick="toggleVoice(this)">
         <svg width="13" height="13" viewBox="0 0 12 12" fill="currentColor"><path d="M3 2l7 4-7 4z"/></svg>
-        くみこのボイスを聞く
+        もりくみのボイスを聞く
       </button>
       <audio preload="none" src="${url}" onended="voiceEnded(this)"></audio>`;
   };
@@ -446,12 +446,12 @@ function toggleVoice(btn) {
     btn.classList.add("playing"); setVoiceLabel(btn, "再生中…（押すと停止）");
   } else {
     audio.pause();
-    btn.classList.remove("playing"); setVoiceLabel(btn, "くみこのボイスを聞く");
+    btn.classList.remove("playing"); setVoiceLabel(btn, "もりくみのボイスを聞く");
   }
 }
 function voiceEnded(audio) {
   const btn = audio.parentElement.querySelector(".voice-btn");
-  if (btn) { btn.classList.remove("playing"); setVoiceLabel(btn, "くみこのボイスを聞く"); }
+  if (btn) { btn.classList.remove("playing"); setVoiceLabel(btn, "もりくみのボイスを聞く"); }
 }
 
 // ---------- 同期ランキング ----------
